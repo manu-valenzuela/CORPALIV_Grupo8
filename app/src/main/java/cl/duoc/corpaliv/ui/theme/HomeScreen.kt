@@ -22,7 +22,7 @@ fun HomeScreen() {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Mi App Corpaliv",
+                        text = "Corpaliv",
                         style = MaterialTheme.typography.titleLarge
                     )
                 },
