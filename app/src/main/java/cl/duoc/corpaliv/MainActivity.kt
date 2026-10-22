@@ -16,7 +16,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             CORPALIV_Grupo8Theme {
                 // Mostramos la pantalla principal completa
-                HomeScreen()
+                HomeScreen2()
             }
         }
     }

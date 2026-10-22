@@ -1,3 +1,4 @@
+import androidx.compose.ui.tooling.preview.Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenMedium() {
@@ -52,4 +53,15 @@ fun HomeScreenMedium() {
             )
         }
     }
+}
+
+@Preview(
+    name = "Medium",
+    widthDp = 720,
+    heightDp = 1280,
+    showBackground = true
+)
+@Composable
+fun HomeScreenMPreview() {
+    HomeScreenM()
 }
