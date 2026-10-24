@@ -37,7 +37,7 @@ fun PantallaInicioExpandida(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            TarjetaDonacionExpres(
+            TarjetaDonacionExpress(
                 alConfirmarDonacion = alRealizarDonacion
             )
 

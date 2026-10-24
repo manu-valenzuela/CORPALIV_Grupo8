@@ -26,7 +26,7 @@ import cl.duoc.corpaliv.model.DonacionExpress
 import cl.duoc.corpaliv.model.MetodoPago
 
 @Composable
-fun TarjetaDonacionExpres(
+fun TarjetaDonacionExpress(
     alConfirmarDonacion: (DonacionExpress) -> Unit,
     modifier: Modifier = Modifier
 ) {

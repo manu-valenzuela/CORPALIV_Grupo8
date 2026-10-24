@@ -42,7 +42,7 @@ fun PantallaInicioMediana(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             // Sección Donación Exprés
-            TarjetaDonacionExpres(
+            TarjetaDonacionExpress(
                 alConfirmarDonacion = alRealizarDonacion
             )
 

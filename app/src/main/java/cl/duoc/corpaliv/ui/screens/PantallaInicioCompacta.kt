@@ -58,11 +58,6 @@ fun PantallaInicioCompacta(
     }
 }
 
-@Composable
-fun TarjetaDonacionExpress(alConfirmarDonacion: (DonacionExpress) -> Unit) {
-    TODO("Not yet implemented")
-}
-
 @Preview(
     name = "Small",
     widthDp = 360,
