@@ -9,9 +9,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import cl.duoc.corpaliv.ui.utils.screens.AndamiajeAplicacion
-import cl.duoc.corpaliv.ui.utils.screens.PantallaInicio
-import cl.duoc.corpaliv.ui.utils.screens.PantallaTienda
+import cl.duoc.corpaliv.ui.screens.AndamiajeAplicacion
+import cl.duoc.corpaliv.ui.screens.PantallaInicio
+import cl.duoc.corpaliv.ui.screens.PantallaTienda
 import cl.duoc.corpaliv.viewmodel.ViewModelInicio
 import cl.duoc.corpaliv.viewmodel.ViewModelTienda
 

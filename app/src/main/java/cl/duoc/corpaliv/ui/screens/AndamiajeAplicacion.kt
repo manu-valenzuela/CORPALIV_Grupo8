@@ -1,12 +1,10 @@
-package cl.duoc.corpaliv.ui.utils.screens
+package cl.duoc.corpaliv.ui.screens
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Business
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -21,12 +19,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import cl.duoc.corpaliv.ui.utils.RutaAplicacion
 
 data class ElementoNavegacion(
     val titulo: String,
     val ruta: String,
-    val icono: androidx.compose.ui.graphics.vector.ImageVector
+    val icono: ImageVector
 )
 
 val elementosNavegacion = listOf(

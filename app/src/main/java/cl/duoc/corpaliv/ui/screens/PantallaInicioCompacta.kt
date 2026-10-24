@@ -1,4 +1,4 @@
-package cl.duoc.corpaliv.ui.utils.screens
+package cl.duoc.corpaliv.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,8 +15,6 @@ import androidx.compose.ui.unit.dp
 import cl.duoc.corpaliv.model.DonacionExpress
 import cl.duoc.corpaliv.model.Evento
 import cl.duoc.corpaliv.model.Noticia
-import cl.duoc.corpaliv.ui.utils.screens.TarjetaEvento
-import cl.duoc.corpaliv.ui.utils.screens.TarjetaNoticia
 
 @Composable
 fun PantallaInicioCompacta(

@@ -1,4 +1,4 @@
-package cl.duoc.corpaliv.ui.utils.screens
+package cl.duoc.corpaliv.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
