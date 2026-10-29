@@ -54,6 +54,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
     implementation("androidx.compose.material3:material3-window-size-class")
 
+    implementation("androidx.datastore:datastore-preferences:1.1.0")
+
     // AndroidX Core y Lifecycle
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

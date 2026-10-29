@@ -1,95 +1,132 @@
 package cl.duoc.corpaliv.ui.screens
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Text
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import cl.duoc.corpaliv.model.DonacionExpress
-import cl.duoc.corpaliv.model.MetodoPago
+import cl.duoc.corpaliv.model.DonacionUiState
 
 @Composable
 fun TarjetaDonacionExpress(
-    alConfirmarDonacion: (DonacionExpress) -> Unit,
+    formState: DonacionUiState,
+    mostrarMensajeAnimado: Boolean,
+    mensajePersistido: String,
+    onNombreChange: (String) -> Unit,
+    onCorreoChange: (String) -> Unit,
+    onMontoChange: (String) -> Unit,
+    onConfirmarDonacion: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var textoMonto by remember { mutableStateOf("") }
-    var metodoSeleccionado by remember { mutableStateOf(MetodoPago.TARJETA_CREDITO) }
+    val context = LocalContext.current
+
+    // Animar color del botón según si los campos principales están llenos (Guía 12)
+    val colorBotonAnimado by animateColorAsState(
+        targetValue = if (formState.nombre.isNotBlank() && formState.monto.isNotBlank()) Color(0xFF0052CC) else Color(0xFF7986CB),
+        animationSpec = tween(durationMillis = 500),
+        label = "colorBoton"
+    )
 
     Card(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             Text(
-                text = "Haz tu aportación exprés",
+                text = "Haz tu Aporte a CORPALIV",
                 style = MaterialTheme.typography.titleMedium
             )
-            Spacer(modifier = Modifier.height(8.dp))
 
+            // Registro persistente leído desde DataStore (Guía 12)[cite: 75]
+            if (mensajePersistido.isNotBlank()) {
+                Text(
+                    text = mensajePersistido,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+
+            // Campo Nombre (Guía 11)[cite: 84, 85]
             OutlinedTextField(
-                value = textoMonto,
-                onValueChange = { textoMonto = it },
-                label = { Text("Monto a donar ($)") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                value = formState.nombre,
+                onValueChange = onNombreChange,
+                label = { Text("Nombre Completo") },
+                isError = formState.errores.nombre != null,
+                supportingText = {
+                    formState.errores.nombre?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+                },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Método de pago:",
-                style = MaterialTheme.typography.bodySmall
+            // Campo Correo (Guía 11)[cite: 85]
+            OutlinedTextField(
+                value = formState.correo,
+                onValueChange = onCorreoChange,
+                label = { Text("Correo Electrónico") },
+                isError = formState.errores.correo != null,
+                supportingText = {
+                    formState.errores.correo?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
             )
 
-            MetodoPago.values().forEach { metodo ->
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    RadioButton(
-                        selected = (metodo == metodoSeleccionado),
-                        onClick = { metodoSeleccionado = metodo }
-                    )
-                    Text(
-                        text = when (metodo) {
-                            MetodoPago.TARJETA_CREDITO -> "Tarjeta de Crédito"
-                            MetodoPago.TARJETA_DEBITO -> "Tarjeta de Débito"
-                            MetodoPago.TRANSFERENCIA_BANCARIA -> "Transferencia Bancaria"
-                        },
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-            Button(
-                onClick = {
-                    val montoNumerico = textoMonto.toDoubleOrNull() ?: 0.0
-                    if (montoNumerico > 0.0) {
-                        alConfirmarDonacion(DonacionExpress(montoNumerico, metodoSeleccionado))
-                    }
+            // Campo Monto (Guía 11)[cite: 84, 85]
+            OutlinedTextField(
+                value = formState.monto,
+                onValueChange = onMontoChange,
+                label = { Text("Monto a Donar ($)") },
+                isError = formState.errores.monto != null,
+                supportingText = {
+                    formState.errores.monto?.let { Text(it, color = MaterialTheme.colorScheme.error) }
                 },
-                enabled = textoMonto.isNotBlank() && (textoMonto.toDoubleOrNull() ?: 0.0) > 0.0,
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            // Botón con color animado (Guías 11 y 12)[cite: 76, 86]
+            Button(
+                onClick = onConfirmarDonacion,
+                colors = ButtonDefaults.buttonColors(containerColor = colorBotonAnimado),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Donar Ahora")
+                Text("Registrar Donación")
+            }
+
+            // Animación de feedback mediante AnimatedVisibility (Guía 12)[cite: 77]
+            AnimatedVisibility(visible = mostrarMensajeAnimado) {
+                Text(
+                    text = "¡Estado guardado exitosamente en DataStore!",
+                    color = Color(0xFF4CAF50),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+
+            // Recurso Nativo: Intent del sistema para realizar llamadas telefónicas directas
+            OutlinedButton(
+                onClick = {
+                    val intent = Intent(Intent.ACTION_DIAL).apply {
+                        data = Uri.parse("tel:222000000")
+                    }
+                    context.startActivity(intent)
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Llamar a Central CORPALIV (Recurso Nativo)")
             }
         }
     }

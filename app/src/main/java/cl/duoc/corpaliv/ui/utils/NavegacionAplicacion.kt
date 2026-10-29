@@ -12,6 +12,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import cl.duoc.corpaliv.ui.screens.AndamiajeAplicacion
 import cl.duoc.corpaliv.ui.screens.PantallaInicio
 import cl.duoc.corpaliv.ui.screens.PantallaTienda
+import cl.duoc.corpaliv.ui.screens.ResumenDonacionScreen
 import cl.duoc.corpaliv.viewmodel.ViewModelInicio
 import cl.duoc.corpaliv.viewmodel.ViewModelTienda
 
@@ -40,19 +41,40 @@ fun NavegacionAplicacion(
             navController = controladorNavegacion,
             startDestination = RutaAplicacion.Inicio.ruta
         ) {
+            // Pantalla Principal de Inicio
             composable(RutaAplicacion.Inicio.ruta) {
                 val estadoInicio by viewModelInicio.estado.collectAsState()
+                val formState by viewModelInicio.formState.collectAsState()
+                val mostrarMensaje by viewModelInicio.mostrarMensaje.collectAsState()
 
                 PantallaInicio(
                     claseAnchoVentana = claseAnchoVentana,
+                    cargando = estadoInicio.cargando,
                     listaNoticias = estadoInicio.listaNoticias,
                     proximoEvento = estadoInicio.proximoEvento,
-                    alRealizarDonacion = { donacion ->
-                        viewModelInicio.procesarDonacionExpres(donacion)
+                    formState = formState,
+                    mostrarMensajeAnimado = mostrarMensaje,
+                    mensajePersistido = estadoInicio.mensajePersistido,
+                    onNombreChange = viewModelInicio::onNombreChange,
+                    onCorreoChange = viewModelInicio::onCorreoChange,
+                    onMontoChange = viewModelInicio::onMontoChange,
+                    onConfirmarDonacion = {
+                        viewModelInicio.realizarDonacion {
+                            controladorNavegacion.navigate("resumen")[cite: 86]
+                        }
                     }
                 )
             }
 
+            // Pantalla de Resumen de Donación (Guía 11)[cite: 87, 88]
+            composable("resumen") {
+                ResumenDonacionScreen(
+                    viewModel = viewModelInicio,
+                    alVolver = { controladorNavegacion.popBackStack() }
+                )
+            }
+
+            // Pantalla de Tienda Solidaria
             composable(RutaAplicacion.Tienda.ruta) {
                 val estadoTienda by viewModelTienda.estado.collectAsState()
 
