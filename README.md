@@ -7,6 +7,10 @@ Sebastián Rojo
 
 Manuel Valenzuela
 
+## Asignación de tareas del proyecto
+
+https://github.com/users/manu-valenzuela/projects/2
+
 ## Descripción de la App
 
 ```
