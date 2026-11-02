@@ -38,7 +38,6 @@ val elementosSocio = listOf(
     ElementoNavegacion("Registrarse", RutaAplicacion.RegistroSocio.ruta, Icons.Default.Person)
 )
 
-// Se elimina "Crear Usuario" de la barra inferior
 val elementosTrabajador = listOf(
     ElementoNavegacion("Inicio", RutaAplicacion.SeleccionRol.ruta, Icons.Default.Home),
     ElementoNavegacion("Usuarios", RutaAplicacion.GestionUsuarios.ruta, Icons.Default.AccountCircle),
@@ -65,9 +64,9 @@ fun AndamiajeAplicacion(
     val elementosNavegacion = if (esTrabajador) elementosTrabajador else elementosSocio
 
     val tituloPantalla = when (rutaActual) {
-        RutaAplicacion.PortalSocio.ruta -> "Portal Informativo Socio"
-        RutaAplicacion.Tienda.ruta -> if (esTrabajador) "Gestión de Ventas" else "Tienda Solidaria"
-        RutaAplicacion.RegistroSocio.ruta -> if (esTrabajador) "Crear Nuevo Usuario" else "Registro de Socio"
+        RutaAplicacion.PortalSocio.ruta -> "Portal CORPALIV"
+        RutaAplicacion.Tienda.ruta -> if (esTrabajador) "Gestión de Ventas" else "Tienda CORPALIV"
+        RutaAplicacion.RegistroSocio.ruta -> if (esTrabajador) "Crear Usuario" else "Registro de Socio"
         RutaAplicacion.GestionUsuarios.ruta -> "Gestión de Usuarios"
         RutaAplicacion.GestionDonaciones.ruta -> "Gestión de Donaciones"
         "resumen" -> "Resumen de Aporte"
@@ -78,8 +77,8 @@ fun AndamiajeAplicacion(
         TopAppBar(
             title = { Text(text = tituloPantalla) },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                containerColor = MaterialTheme.colorScheme.primary,
+                titleContentColor = MaterialTheme.colorScheme.onPrimary
             )
         )
     }

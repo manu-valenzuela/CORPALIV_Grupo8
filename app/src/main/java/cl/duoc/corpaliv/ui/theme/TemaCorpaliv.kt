@@ -8,19 +8,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 // Definición de colores institucionales
-val AzulPrincipal = Color(0xFF0052CC)
-val AzulSecundario = Color(0xFF0066FF)
+val MoradoPrincipal = Color(0xFF551357)
+val MoradoSecundario = Color(0xFF6F238C)
 val FondoClaro = Color(0xFFF8F9FA)
 val SuperficieClara = Color(0xFFFFFFFF)
 
-val AzulOscuroPrincipal = Color(0xFF4C9AFF)
-val AzulOscuroSecundario = Color(0xFF82B1FF)
+val MoradoOscuroPrincipal = Color(0xFFA052D2)
+val MoradoOscuroSecundario = Color(0xFFEC82FF)
 val FondoOscuro = Color(0xFF121212)
 val SuperficieOscura = Color(0xFF1E1E1E)
 
 private val EsquemaColoresClaro = lightColorScheme(
-    primary = AzulPrincipal,
-    secondary = AzulSecundario,
+    primary = MoradoPrincipal,
+    secondary = MoradoSecundario,
     background = FondoClaro,
     surface = SuperficieClara,
     onPrimary = Color.White,
@@ -28,8 +28,8 @@ private val EsquemaColoresClaro = lightColorScheme(
 )
 
 private val EsquemaColoresOscuro = darkColorScheme(
-    primary = AzulOscuroPrincipal,
-    secondary = AzulOscuroSecundario,
+    primary = MoradoOscuroPrincipal,
+    secondary = MoradoOscuroSecundario,
     background = FondoOscuro,
     surface = SuperficieOscura,
     onPrimary = Color.Black,
