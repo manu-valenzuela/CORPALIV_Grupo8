@@ -9,14 +9,18 @@ import cl.duoc.corpaliv.ui.utils.SeleccionarPantallaAdaptativa
 fun PantallaTienda(
     claseAnchoVentana: WindowWidthSizeClass,
     listaProductos: List<Producto>,
-    alAgregarAlCarrito: (Producto) -> Unit
+    mensajeConfirmacion: String?,
+    onConfirmarCompra: (Producto, Int) -> Unit,
+    onLimpiarMensaje: () -> Unit
 ) {
     SeleccionarPantallaAdaptativa(
         claseAnchoVentana = claseAnchoVentana,
         pantallaCompacta = {
             PantallaTiendaCompacta(
                 listaProductos = listaProductos,
-                alAgregarAlCarrito = alAgregarAlCarrito
+                mensajeConfirmacion = mensajeConfirmacion,
+                onConfirmarCompra = onConfirmarCompra,
+                onLimpiarMensaje = onLimpiarMensaje
             )
         }
     )

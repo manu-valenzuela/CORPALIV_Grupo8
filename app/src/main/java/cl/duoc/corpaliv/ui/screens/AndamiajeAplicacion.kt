@@ -56,6 +56,7 @@ fun AndamiajeAplicacion(
     alSeleccionarRuta: (String) -> Unit,
     contenido: @Composable () -> Unit
 ) {
+    // Si estamos en Selección de Rol, ocultamos las barras
     if (rutaActual == RutaAplicacion.SeleccionRol.ruta) {
         Box(modifier = Modifier.fillMaxSize()) {
             contenido()
