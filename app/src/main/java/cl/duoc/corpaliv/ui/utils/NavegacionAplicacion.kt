@@ -4,6 +4,9 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -31,14 +34,24 @@ fun NavegacionAplicacion(
     val entradaNavegacionActual by controladorNavegacion.currentBackStackEntryAsState()
     val rutaActual = entradaNavegacionActual?.destination?.route ?: RutaAplicacion.SeleccionRol.ruta
 
+    var esTrabajador by remember { mutableStateOf(false) }
+
     AndamiajeAplicacion(
         claseAnchoVentana = claseAnchoVentana,
         rutaActual = rutaActual,
+        esTrabajador = esTrabajador,
         alSeleccionarRuta = { nuevaRuta ->
-            controladorNavegacion.navigate(nuevaRuta) {
-                popUpTo(RutaAplicacion.Inicio.ruta) { saveState = true }
-                launchSingleTop = true
-                restoreState = true
+            if (nuevaRuta == RutaAplicacion.SeleccionRol.ruta) {
+                // Al pulsar Inicio, limpia la pila y vuelve a la pantalla de selección de rol
+                controladorNavegacion.navigate(RutaAplicacion.SeleccionRol.ruta) {
+                    popUpTo(0) { inclusive = true }
+                }
+            } else {
+                controladorNavegacion.navigate(nuevaRuta) {
+                    popUpTo(RutaAplicacion.SeleccionRol.ruta) { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
+                }
             }
         }
     ) {
@@ -46,19 +59,23 @@ fun NavegacionAplicacion(
             navController = controladorNavegacion,
             startDestination = RutaAplicacion.SeleccionRol.ruta
         ) {
+            // Pantalla Inicial: Selección de Rol (Limpia sin barras)
             composable(RutaAplicacion.SeleccionRol.ruta) {
                 PantallaSeleccionRol(
                     claseAnchoVentana = claseAnchoVentana,
                     alSeleccionarSocioInvitado = {
-                        controladorNavegacion.navigate(RutaAplicacion.Inicio.ruta)
+                        esTrabajador = false
+                        controladorNavegacion.navigate(RutaAplicacion.PortalSocio.ruta)
                     },
                     alSeleccionarFuncionario = {
+                        esTrabajador = true
                         controladorNavegacion.navigate(RutaAplicacion.GestionUsuarios.ruta)
                     }
                 )
             }
 
-            composable(RutaAplicacion.Inicio.ruta) {
+            // Portal Informativo del Socio
+            composable(RutaAplicacion.PortalSocio.ruta) {
                 val estadoInicio by viewModelInicio.estado.collectAsState()
                 val formState by viewModelInicio.formState.collectAsState()
                 val mostrarMensaje by viewModelInicio.mostrarMensaje.collectAsState()
@@ -99,19 +116,18 @@ fun NavegacionAplicacion(
                 )
             }
 
-            // Nueva Ruta: Registro de Socios
             composable(RutaAplicacion.RegistroSocio.ruta) {
                 PantallaRegistroSocio(
                     viewModelUsuario = viewModelUsuario,
                     onRegistroExitoso = {
-                        controladorNavegacion.navigate(RutaAplicacion.Inicio.ruta) {
-                            popUpTo(RutaAplicacion.Inicio.ruta) { inclusive = true }
+                        val destino = if (esTrabajador) RutaAplicacion.GestionUsuarios.ruta else RutaAplicacion.PortalSocio.ruta
+                        controladorNavegacion.navigate(destino) {
+                            popUpTo(destino) { inclusive = true }
                         }
                     }
                 )
             }
 
-            // Nueva Ruta: Gestión de Usuarios para Funcionario
             composable(RutaAplicacion.GestionUsuarios.ruta) {
                 val listaUsuarios by viewModelUsuario.listaUsuarios.collectAsState()
 
