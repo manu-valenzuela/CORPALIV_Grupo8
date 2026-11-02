@@ -101,16 +101,11 @@ fun NavegacionAplicacion(
 
             // Nueva Ruta: Registro de Socios
             composable(RutaAplicacion.RegistroSocio.ruta) {
-                val formUsuarioState by viewModelUsuario.formState.collectAsState()
-
                 PantallaRegistroSocio(
-                    claseAnchoVentana = claseAnchoVentana,
-                    formState = formUsuarioState,
-                    onNombreChange = viewModelUsuario::onNombreChange,
-                    onCorreoChange = viewModelUsuario::onCorreoChange,
-                    onRegistrar = {
-                        viewModelUsuario.registrarSocio {
-                            controladorNavegacion.navigate(RutaAplicacion.Inicio.ruta)
+                    viewModelUsuario = viewModelUsuario,
+                    onRegistroExitoso = {
+                        controladorNavegacion.navigate(RutaAplicacion.Inicio.ruta) {
+                            popUpTo(RutaAplicacion.Inicio.ruta) { inclusive = true }
                         }
                     }
                 )

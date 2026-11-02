@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CompassCalibration
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -22,6 +21,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -42,6 +42,9 @@ fun PantallaRegistroSocioCompacta(
     val scrollState = rememberScrollState()
 
     var passwordVisible by remember { mutableStateOf(false) }
+    var montoPersonalizadoTexto by remember { mutableStateOf("") }
+    var esPersonalizadoSeleccionado by remember { mutableStateOf(false) }
+
     val manejadorUbicacion = remember { ManejadorUbicacion(context) }
 
     val locationLauncher = rememberLauncherForActivityResult(
@@ -103,6 +106,7 @@ fun PantallaRegistroSocioCompacta(
             label = { Text("Nombre") },
             isError = state.errores.nombre != null,
             supportingText = { state.errores.nombre?.let { Text(it) } },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -112,6 +116,7 @@ fun PantallaRegistroSocioCompacta(
             label = { Text("Apellido") },
             isError = state.errores.apellido != null,
             supportingText = { state.errores.apellido?.let { Text(it) } },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -121,6 +126,7 @@ fun PantallaRegistroSocioCompacta(
             label = { Text("RUT (ej: 12345678-K)") },
             isError = state.errores.rut != null,
             supportingText = { state.errores.rut?.let { Text(it) } },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -130,6 +136,7 @@ fun PantallaRegistroSocioCompacta(
             label = { Text("Fecha Nacimiento (DD/MM/AAAA)") },
             isError = state.errores.fechaNacimiento != null,
             supportingText = { state.errores.fechaNacimiento?.let { Text(it) } },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -153,6 +160,7 @@ fun PantallaRegistroSocioCompacta(
                     }
                 }
             },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -162,18 +170,21 @@ fun PantallaRegistroSocioCompacta(
             style = MaterialTheme.typography.titleMedium
         )
 
-        val opcionesDonacion = listOf(
+        val opcionesFijas = listOf(
             OpcionDonacionMensual.CincoMil,
             OpcionDonacionMensual.QuinceMil,
             OpcionDonacionMensual.VeinticincoMil
         )
 
-        opcionesDonacion.forEach { opcion ->
-            val seleccionada = state.donacionMensual.javaClass == opcion.javaClass
+        opcionesFijas.forEach { opcion ->
+            val seleccionada = !esPersonalizadoSeleccionado && state.donacionMensual.javaClass == opcion.javaClass
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { viewModelUsuario.onDonacionChange(opcion) },
+                    .clickable {
+                        esPersonalizadoSeleccionado = false
+                        viewModelUsuario.onDonacionChange(opcion)
+                    },
                 colors = CardDefaults.cardColors(
                     containerColor = if (seleccionada) MaterialTheme.colorScheme.primaryContainer
                     else MaterialTheme.colorScheme.surfaceVariant
@@ -187,7 +198,10 @@ fun PantallaRegistroSocioCompacta(
                 ) {
                     RadioButton(
                         selected = seleccionada,
-                        onClick = { viewModelUsuario.onDonacionChange(opcion) }
+                        onClick = {
+                            esPersonalizadoSeleccionado = false
+                            viewModelUsuario.onDonacionChange(opcion)
+                        }
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Column {
@@ -204,12 +218,72 @@ fun PantallaRegistroSocioCompacta(
             }
         }
 
-        // --- Credenciales de Cuenta ---
+        // --- Opción de Monto Personalizado ---
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    esPersonalizadoSeleccionado = true
+                    val montoInt = montoPersonalizadoTexto.toIntOrNull() ?: 0
+                    viewModelUsuario.onDonacionChange(OpcionDonacionMensual.Personalizado(montoInt))
+                },
+            colors = CardDefaults.cardColors(
+                containerColor = if (esPersonalizadoSeleccionado) MaterialTheme.colorScheme.primaryContainer
+                else MaterialTheme.colorScheme.surfaceVariant
+            ),
+            border = if (esPersonalizadoSeleccionado) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else null,
+            shape = RoundedCornerShape(10.dp)
+        ) {
+            Column(modifier = Modifier.padding(12.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    RadioButton(
+                        selected = esPersonalizadoSeleccionado,
+                        onClick = {
+                            esPersonalizadoSeleccionado = true
+                            val montoInt = montoPersonalizadoTexto.toIntOrNull() ?: 0
+                            viewModelUsuario.onDonacionChange(OpcionDonacionMensual.Personalizado(montoInt))
+                        }
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Otro monto mensual",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+
+                if (esPersonalizadoSeleccionado) {
+                    OutlinedTextField(
+                        value = montoPersonalizadoTexto,
+                        onValueChange = { texto ->
+                            val filtrado = texto.filter { it.isDigit() }
+                            montoPersonalizadoTexto = filtrado
+                            val montoInt = filtrado.toIntOrNull() ?: 0
+                            viewModelUsuario.onDonacionChange(OpcionDonacionMensual.Personalizado(montoInt))
+                        },
+                        label = { Text("Monto voluntario ($)") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp)
+                    )
+                }
+            }
+        }
+
+        state.errores.donacionMensual?.let { err ->
+            Text(
+                text = err,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+
+        // --- Credenciales ---
         OutlinedTextField(
             value = state.correo,
             onValueChange = { viewModelUsuario.onCorreoChange(it) },
             label = { Text("Correo Electrónico") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
             isError = state.errores.correo != null,
             supportingText = { state.errores.correo?.let { Text(it) } },
             modifier = Modifier.fillMaxWidth()
@@ -220,7 +294,7 @@ fun PantallaRegistroSocioCompacta(
             onValueChange = { viewModelUsuario.onContrasenaChange(it) },
             label = { Text("Contraseña") },
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
             trailingIcon = {
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
                     Icon(

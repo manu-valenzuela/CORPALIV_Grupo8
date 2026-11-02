@@ -41,6 +41,10 @@ class UsuarioDataStore(private val context: Context) {
         }
     }
 
+    private fun sanear(texto: String): String {
+        return texto.replace(";", ",").replace("||", " ")
+    }
+
     suspend fun guardarUsuario(usuario: Usuario) {
         context.dataStore.edit { prefs ->
             val listaActual = (prefs[KEY_USUARIOS] ?: "").split("||").filter { it.isNotBlank() }.toMutableList()
@@ -55,7 +59,7 @@ class UsuarioDataStore(private val context: Context) {
                 is RolUsuario.Voluntario -> "VOLUNTARIO"
                 is RolUsuario.Funcionario -> "FUNCIONARIO"
             }
-            val nuevoRegistro = "${usuario.id};${usuario.nombre};${usuario.apellido};${usuario.rut};${usuario.fechaNacimiento};${usuario.direccion};${usuario.latitud ?: ""};${usuario.longitud ?: ""};$donacionStr;${usuario.correo};$rolStr"
+            val nuevoRegistro = "${sanear(usuario.id)};${sanear(usuario.nombre)};${sanear(usuario.apellido)};${sanear(usuario.rut)};${sanear(usuario.fechaNacimiento)};${sanear(usuario.direccion)};${usuario.latitud ?: ""};${usuario.longitud ?: ""};$donacionStr;${sanear(usuario.correo)};$rolStr"
             listaActual.add(nuevoRegistro)
             prefs[KEY_USUARIOS] = listaActual.joinToString("||")
         }
