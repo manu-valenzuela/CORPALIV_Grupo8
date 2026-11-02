@@ -5,8 +5,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -34,10 +37,20 @@ data class ElementoNavegacion(
     val icono: ImageVector
 )
 
-val elementosNavegacion = listOf(
-    ElementoNavegacion("Inicio", RutaAplicacion.Inicio.ruta, Icons.Default.Home),
+// Pestañas para Socio / Invitado
+val elementosSocio = listOf(
+    ElementoNavegacion("Inicio", RutaAplicacion.SeleccionRol.ruta, Icons.Default.Home),
+    ElementoNavegacion("Portal", RutaAplicacion.PortalSocio.ruta, Icons.Default.Info),
     ElementoNavegacion("Tienda", RutaAplicacion.Tienda.ruta, Icons.Default.ShoppingBag),
-    ElementoNavegacion("Hazte Socio", RutaAplicacion.RegistroSocio.ruta, Icons.Default.Person)
+    ElementoNavegacion("Registrarse", RutaAplicacion.RegistroSocio.ruta, Icons.Default.Person)
+)
+
+// Pestañas para Trabajador / Funcionario
+val elementosTrabajador = listOf(
+    ElementoNavegacion("Inicio", RutaAplicacion.SeleccionRol.ruta, Icons.Default.Home),
+    ElementoNavegacion("Usuarios", RutaAplicacion.GestionUsuarios.ruta, Icons.Default.AccountCircle),
+    ElementoNavegacion("Ventas", RutaAplicacion.Tienda.ruta, Icons.Default.ShoppingBag),
+    ElementoNavegacion("Crear Usuario", RutaAplicacion.RegistroSocio.ruta, Icons.Default.PersonAdd)
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,9 +58,11 @@ val elementosNavegacion = listOf(
 fun AndamiajeAplicacion(
     claseAnchoVentana: WindowWidthSizeClass,
     rutaActual: String,
+    esTrabajador: Boolean = false,
     alSeleccionarRuta: (String) -> Unit,
     contenido: @Composable () -> Unit
 ) {
+    // Si la pantalla actual es la de Selección de Rol, se muestra limpia (Sin TopBar ni Barra Inferior)
     if (rutaActual == RutaAplicacion.SeleccionRol.ruta) {
         Box(modifier = Modifier.fillMaxSize()) {
             contenido()
@@ -55,10 +70,12 @@ fun AndamiajeAplicacion(
         return
     }
 
+    val elementosNavegacion = if (esTrabajador) elementosTrabajador else elementosSocio
+
     val tituloPantalla = when (rutaActual) {
-        RutaAplicacion.Inicio.ruta -> "CORPALIV - Inicio"
-        RutaAplicacion.Tienda.ruta -> "Tienda Solidaria"
-        RutaAplicacion.RegistroSocio.ruta -> "Registro de Socio"
+        RutaAplicacion.PortalSocio.ruta -> "Portal Informativo Socio"
+        RutaAplicacion.Tienda.ruta -> if (esTrabajador) "Gestión de Ventas" else "Tienda Solidaria"
+        RutaAplicacion.RegistroSocio.ruta -> if (esTrabajador) "Crear Nuevo Usuario" else "Registro de Socio"
         RutaAplicacion.GestionUsuarios.ruta -> "Gestión de Usuarios"
         "resumen" -> "Resumen de Aporte"
         else -> "CORPALIV"
@@ -80,6 +97,7 @@ fun AndamiajeAplicacion(
                 topBar = topBarComposable,
                 bottomBar = {
                     BarraNavegacionInferior(
+                        elementos = elementosNavegacion,
                         rutaActual = rutaActual,
                         alSeleccionarRuta = alSeleccionarRuta
                     )
@@ -104,6 +122,7 @@ fun AndamiajeAplicacion(
                         .padding(padding)
                 ) {
                     RielNavegacionLateral(
+                        elementos = elementosNavegacion,
                         rutaActual = rutaActual,
                         alSeleccionarRuta = alSeleccionarRuta
                     )
@@ -146,6 +165,7 @@ fun AndamiajeAplicacion(
                 topBar = topBarComposable,
                 bottomBar = {
                     BarraNavegacionInferior(
+                        elementos = elementosNavegacion,
                         rutaActual = rutaActual,
                         alSeleccionarRuta = alSeleccionarRuta
                     )
@@ -165,11 +185,12 @@ fun AndamiajeAplicacion(
 
 @Composable
 private fun BarraNavegacionInferior(
+    elementos: List<ElementoNavegacion>,
     rutaActual: String,
     alSeleccionarRuta: (String) -> Unit
 ) {
     NavigationBar {
-        elementosNavegacion.forEach { elemento ->
+        elementos.forEach { elemento ->
             NavigationBarItem(
                 selected = rutaActual == elemento.ruta,
                 onClick = { alSeleccionarRuta(elemento.ruta) },
@@ -182,11 +203,12 @@ private fun BarraNavegacionInferior(
 
 @Composable
 private fun RielNavegacionLateral(
+    elementos: List<ElementoNavegacion>,
     rutaActual: String,
     alSeleccionarRuta: (String) -> Unit
 ) {
     NavigationRail {
-        elementosNavegacion.forEach { elemento ->
+        elementos.forEach { elemento ->
             NavigationRailItem(
                 selected = rutaActual == elemento.ruta,
                 onClick = { alSeleccionarRuta(elemento.ruta) },

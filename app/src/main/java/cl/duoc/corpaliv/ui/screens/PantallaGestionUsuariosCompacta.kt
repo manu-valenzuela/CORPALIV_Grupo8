@@ -40,7 +40,7 @@ fun PantallaGestionUsuariosCompacta(
 
         if (listaUsuarios.isEmpty()) {
             Text(
-                text = "No hay usuarios registrados aún en DataStore.",
+                text = "No hay usuarios registrados en el sistema.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -64,6 +64,12 @@ private fun TarjetaUsuarioGestion(
     usuario: Usuario,
     onCambiarRol: (RolUsuario) -> Unit
 ) {
+    val rolesDisponibles = listOf(
+        RolUsuario.Socio,
+        RolUsuario.Voluntario(),
+        RolUsuario.Funcionario()
+    )
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
@@ -79,9 +85,10 @@ private fun TarjetaUsuarioGestion(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                RolUsuario.entries.forEach { rol ->
+                rolesDisponibles.forEach { rol ->
+                    val esSeleccionado = usuario.rol::class == rol::class
                     FilterChip(
-                        selected = usuario.rol == rol,
+                        selected = esSeleccionado,
                         onClick = { onCambiarRol(rol) },
                         label = { Text(rol.etiqueta) }
                     )

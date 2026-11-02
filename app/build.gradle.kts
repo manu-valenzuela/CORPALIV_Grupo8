@@ -40,7 +40,9 @@ android {
 dependencies {
     // BOM de Compose gestiona las versiones unificadamente (debe ir primero)
     implementation(platform(libs.androidx.compose.bom))
-
+    // Ubicación
+    implementation("com.google.android.gms:play-services-location:21.2.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
     // Librerías del proyecto vinculadas a la BOM
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
