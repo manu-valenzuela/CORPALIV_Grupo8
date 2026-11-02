@@ -1,27 +1,15 @@
 package cl.duoc.corpaliv.ui.screens
 
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import cl.duoc.corpaliv.model.RegistroUsuarioUiState
-import cl.duoc.corpaliv.ui.utils.SeleccionarPantallaAdaptativa
+import cl.duoc.corpaliv.viewmodel.ViewModelUsuario
 
 @Composable
 fun PantallaRegistroSocio(
-    claseAnchoVentana: WindowWidthSizeClass,
-    formState: RegistroUsuarioUiState,
-    onNombreChange: (String) -> Unit,
-    onCorreoChange: (String) -> Unit,
-    onRegistrar: () -> Unit
+    viewModelUsuario: ViewModelUsuario,
+    onRegistroExitoso: () -> Unit
 ) {
-    SeleccionarPantallaAdaptativa(
-        claseAnchoVentana = claseAnchoVentana,
-        pantallaCompacta = {
-            PantallaRegistroSocioCompacta(
-                formState = formState,
-                onNombreChange = onNombreChange,
-                onCorreoChange = onCorreoChange,
-                onRegistrar = onRegistrar
-            )
-        }
+    PantallaRegistroSocioCompacta(
+        viewModelUsuario = viewModelUsuario,
+        onRegistroExitoso = onRegistroExitoso
     )
 }
