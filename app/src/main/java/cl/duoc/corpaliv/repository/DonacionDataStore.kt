@@ -40,9 +40,14 @@ class DonacionDataStore(private val context: Context) {
 
     suspend fun guardarDonacion(donacion: DonacionExpress) {
         context.dataStore.edit { prefs ->
-            val listaActual = (prefs[KEY_DONACIONES] ?: "").split("||").filter { it.isNotBlank() }.toMutableList()
+            val listaActual = (prefs[KEY_DONACIONES] ?: "")
+                .split("||")
+                .filter { it.isNotBlank() }
+                .toMutableList()
+
             val nuevoRegistro = "${donacion.id};${donacion.nombre};${donacion.correo};${donacion.monto};${donacion.fecha}"
             listaActual.add(0, nuevoRegistro)
+
             prefs[KEY_DONACIONES] = listaActual.joinToString("||")
             prefs[ULTIMO_DONANTE] = donacion.nombre
             prefs[ULTIMO_MONTO] = donacion.monto.toInt().toString()

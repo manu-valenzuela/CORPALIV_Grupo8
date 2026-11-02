@@ -46,15 +46,12 @@ fun PantallaInicioCompacta(
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            TarjetaDonacionExpress(
-                formState = formState,
-                mostrarMensajeAnimado = mostrarMensajeAnimado,
-                mensajePersistido = mensajePersistido,
-                onNombreChange = onNombreChange,
-                onCorreoChange = onCorreoChange,
-                onMontoChange = onMontoChange,
-                onConfirmarDonacion = onConfirmarDonacion
+        )
+
+        {
+            Text(
+                text = "Eventos",
+                style = MaterialTheme.typography.titleLarge
             )
 
             proximoEvento?.let { evento ->
@@ -69,6 +66,22 @@ fun PantallaInicioCompacta(
             listaNoticias.forEach { noticia ->
                 TarjetaNoticia(noticia = noticia, alSeleccionarNoticia = {})
             }
+                Text(
+                    text = "Donación Express",
+                    style = MaterialTheme.typography.titleLarge
+                )
+
+                TarjetaDonacionExpress(
+                    formState = formState,
+                    mostrarMensajeAnimado = mostrarMensajeAnimado,
+                    mensajePersistido = mensajePersistido,
+                    onNombreChange = onNombreChange,
+                    onCorreoChange = onCorreoChange,
+                    onMontoChange = onMontoChange,
+                    onConfirmarDonacion = onConfirmarDonacion
+                )
+
+
         }
     }
 }

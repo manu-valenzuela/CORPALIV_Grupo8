@@ -8,7 +8,6 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.VolunteerActivism
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,12 +38,12 @@ val elementosSocio = listOf(
     ElementoNavegacion("Registrarse", RutaAplicacion.RegistroSocio.ruta, Icons.Default.Person)
 )
 
+// Se elimina "Crear Usuario" de la barra inferior
 val elementosTrabajador = listOf(
     ElementoNavegacion("Inicio", RutaAplicacion.SeleccionRol.ruta, Icons.Default.Home),
     ElementoNavegacion("Usuarios", RutaAplicacion.GestionUsuarios.ruta, Icons.Default.AccountCircle),
     ElementoNavegacion("Donaciones", RutaAplicacion.GestionDonaciones.ruta, Icons.Default.VolunteerActivism),
-    ElementoNavegacion("Ventas", RutaAplicacion.Tienda.ruta, Icons.Default.ShoppingBag),
-    ElementoNavegacion("Crear Usuario", RutaAplicacion.RegistroSocio.ruta, Icons.Default.PersonAdd)
+    ElementoNavegacion("Ventas", RutaAplicacion.Tienda.ruta, Icons.Default.ShoppingBag)
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,7 +55,6 @@ fun AndamiajeAplicacion(
     alSeleccionarRuta: (String) -> Unit,
     contenido: @Composable () -> Unit
 ) {
-    // Si estamos en Selección de Rol, ocultamos las barras
     if (rutaActual == RutaAplicacion.SeleccionRol.ruta) {
         Box(modifier = Modifier.fillMaxSize()) {
             contenido()

@@ -29,16 +29,10 @@ fun PantallaGestionDonacionesCompacta(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text(
-            text = "Panel de Donaciones (Funcionario)",
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
-        )
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Tarjeta de Resumen Consolidado
+        // Tarjeta de Resumen
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
@@ -58,7 +52,7 @@ fun PantallaGestionDonacionesCompacta(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "• Express Puntuales: $ ${totalExpress.toInt()}",
+                        text = "• Donaciones Express: $ ${totalExpress.toInt()}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )

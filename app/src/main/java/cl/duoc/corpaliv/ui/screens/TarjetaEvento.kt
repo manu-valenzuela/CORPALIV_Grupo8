@@ -52,12 +52,7 @@ fun TarjetaEvento(
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
             Spacer(modifier = Modifier.height(12.dp))
-            Button(
-                onClick = { alVerDetallesEvento(evento) },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Confirmar Asistencia")
-            }
+
         }
     }
 }

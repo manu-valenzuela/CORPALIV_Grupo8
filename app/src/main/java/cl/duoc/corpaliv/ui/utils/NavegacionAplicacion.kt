@@ -127,7 +127,10 @@ fun NavegacionAplicacion(
                 PantallaGestionUsuarios(
                     claseAnchoVentana = claseAnchoVentana,
                     listaUsuarios = listaUsuarios,
-                    onCambiarRol = viewModelUsuario::cambiarRolUsuario
+                    onCambiarRol = viewModelUsuario::cambiarRolUsuario,
+                    onCrearUsuario = {
+                        controladorNavegacion.navigate(RutaAplicacion.RegistroSocio.ruta)
+                    }
                 )
             }
 

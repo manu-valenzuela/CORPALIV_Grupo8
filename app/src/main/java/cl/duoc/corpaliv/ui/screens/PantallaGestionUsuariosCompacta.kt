@@ -13,6 +13,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Group
+import androidx.compose.material.icons.filled.PersonAdd
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -30,9 +32,9 @@ import cl.duoc.corpaliv.model.Usuario
 fun PantallaGestionUsuariosCompacta(
     listaUsuarios: List<Usuario>,
     onCambiarRol: (String, RolUsuario) -> Unit,
+    onCrearUsuario: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // Cálculo de métricas
     val totalUsuarios = listaUsuarios.size
     val totalSocios = listaUsuarios.count { it.rol is RolUsuario.Socio }
     val totalAportesComprometidos = listaUsuarios.sumOf { it.donacionMensual.monto }
@@ -90,6 +92,21 @@ fun PantallaGestionUsuariosCompacta(
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // Botón de Acción Principal para Crear Usuario
+        Button(
+            onClick = onCrearUsuario,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Icon(
+                imageVector = Icons.Default.PersonAdd,
+                contentDescription = null,
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            Text("Crear Nuevo Usuario")
         }
 
         Spacer(modifier = Modifier.height(16.dp))

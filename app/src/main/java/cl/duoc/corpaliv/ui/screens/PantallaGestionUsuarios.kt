@@ -10,14 +10,16 @@ import cl.duoc.corpaliv.ui.utils.SeleccionarPantallaAdaptativa
 fun PantallaGestionUsuarios(
     claseAnchoVentana: WindowWidthSizeClass,
     listaUsuarios: List<Usuario>,
-    onCambiarRol: (String, RolUsuario) -> Unit
+    onCambiarRol: (String, RolUsuario) -> Unit,
+    onCrearUsuario: () -> Unit
 ) {
     SeleccionarPantallaAdaptativa(
         claseAnchoVentana = claseAnchoVentana,
         pantallaCompacta = {
             PantallaGestionUsuariosCompacta(
                 listaUsuarios = listaUsuarios,
-                onCambiarRol = onCambiarRol
+                onCambiarRol = onCambiarRol,
+                onCrearUsuario = onCrearUsuario
             )
         }
     )

@@ -1,12 +1,9 @@
 package cl.duoc.corpaliv.model
 
-enum class MetodoPago {
-    TARJETA_CREDITO,
-    TARJETA_DEBITO,
-    TRANSFERENCIA_BANCARIA
-}
-
 data class DonacionExpress(
+    val id: String,
+    val nombre: String,
+    val correo: String,
     val monto: Double,
-    val metodoPago: MetodoPago
+    val fecha: String
 )
