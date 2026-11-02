@@ -35,10 +35,6 @@ fun PantallaTiendaCompacta(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text(
-            text = "Tienda Solidaria",
-            style = MaterialTheme.typography.headlineSmall
-        )
 
         listaProductos.forEach { producto ->
             TarjetaProducto(

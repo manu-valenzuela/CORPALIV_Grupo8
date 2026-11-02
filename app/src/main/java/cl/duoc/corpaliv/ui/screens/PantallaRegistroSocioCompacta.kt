@@ -93,11 +93,6 @@ fun PantallaRegistroSocioCompacta(
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        Text(
-            text = "Registro de Socio Benefactor",
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.primary
-        )
 
         // --- Datos Personales ---
         OutlinedTextField(

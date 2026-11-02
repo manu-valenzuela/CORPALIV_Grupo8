@@ -25,12 +25,6 @@ fun PantallaVentasCompacta(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text(
-            text = "Registro de Ventas (Panel Trabajador)",
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
-        )
 
         Spacer(modifier = Modifier.height(12.dp))
 

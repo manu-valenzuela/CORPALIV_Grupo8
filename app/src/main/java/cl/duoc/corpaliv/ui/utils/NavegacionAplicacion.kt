@@ -84,7 +84,8 @@ fun NavegacionAplicacion(
             }
 
             composable("resumen") {
-                ResumenDonacionScreen(
+                PantallaResumenDonacion(
+                    claseAnchoVentana = claseAnchoVentana,
                     viewModel = viewModelInicio,
                     alVolver = { controladorNavegacion.popBackStack() }
                 )

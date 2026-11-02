@@ -44,12 +44,6 @@ fun PantallaGestionUsuariosCompacta(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text(
-            text = "Gestión de Usuarios (Panel Funcionario)",
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
-        )
 
         Spacer(modifier = Modifier.height(12.dp))
 
