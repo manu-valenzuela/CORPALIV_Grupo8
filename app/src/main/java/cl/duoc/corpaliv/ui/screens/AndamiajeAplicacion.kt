@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -35,7 +36,8 @@ data class ElementoNavegacion(
 
 val elementosNavegacion = listOf(
     ElementoNavegacion("Inicio", RutaAplicacion.Inicio.ruta, Icons.Default.Home),
-    ElementoNavegacion("Tienda", RutaAplicacion.Tienda.ruta, Icons.Default.ShoppingBag)
+    ElementoNavegacion("Tienda", RutaAplicacion.Tienda.ruta, Icons.Default.ShoppingBag),
+    ElementoNavegacion("Hazte Socio", RutaAplicacion.RegistroSocio.ruta, Icons.Default.Person)
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,7 +48,6 @@ fun AndamiajeAplicacion(
     alSeleccionarRuta: (String) -> Unit,
     contenido: @Composable () -> Unit
 ) {
-    // Si estamos en la pantalla de selección de rol, mostramos solo el contenido a pantalla completa
     if (rutaActual == RutaAplicacion.SeleccionRol.ruta) {
         Box(modifier = Modifier.fillMaxSize()) {
             contenido()
@@ -57,6 +58,8 @@ fun AndamiajeAplicacion(
     val tituloPantalla = when (rutaActual) {
         RutaAplicacion.Inicio.ruta -> "CORPALIV - Inicio"
         RutaAplicacion.Tienda.ruta -> "Tienda Solidaria"
+        RutaAplicacion.RegistroSocio.ruta -> "Registro de Socio"
+        RutaAplicacion.GestionUsuarios.ruta -> "Gestión de Usuarios"
         "resumen" -> "Resumen de Aporte"
         else -> "CORPALIV"
     }

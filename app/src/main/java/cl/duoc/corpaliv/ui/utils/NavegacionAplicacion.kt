@@ -10,19 +10,23 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import cl.duoc.corpaliv.ui.screens.AndamiajeAplicacion
+import cl.duoc.corpaliv.ui.screens.PantallaGestionUsuarios
 import cl.duoc.corpaliv.ui.screens.PantallaInicio
+import cl.duoc.corpaliv.ui.screens.PantallaRegistroSocio
 import cl.duoc.corpaliv.ui.screens.PantallaSeleccionRol
 import cl.duoc.corpaliv.ui.screens.PantallaTienda
 import cl.duoc.corpaliv.ui.screens.ResumenDonacionScreen
 import cl.duoc.corpaliv.viewmodel.ViewModelInicio
 import cl.duoc.corpaliv.viewmodel.ViewModelTienda
+import cl.duoc.corpaliv.viewmodel.ViewModelUsuario
 
 @Composable
 fun NavegacionAplicacion(
     claseAnchoVentana: WindowWidthSizeClass,
     controladorNavegacion: NavHostController,
     viewModelInicio: ViewModelInicio = viewModel(),
-    viewModelTienda: ViewModelTienda = viewModel()
+    viewModelTienda: ViewModelTienda = viewModel(),
+    viewModelUsuario: ViewModelUsuario = viewModel()
 ) {
     val entradaNavegacionActual by controladorNavegacion.currentBackStackEntryAsState()
     val rutaActual = entradaNavegacionActual?.destination?.route ?: RutaAplicacion.SeleccionRol.ruta
@@ -42,7 +46,6 @@ fun NavegacionAplicacion(
             navController = controladorNavegacion,
             startDestination = RutaAplicacion.SeleccionRol.ruta
         ) {
-            // Pantalla Inicial Adaptativa: Selección de Rol
             composable(RutaAplicacion.SeleccionRol.ruta) {
                 PantallaSeleccionRol(
                     claseAnchoVentana = claseAnchoVentana,
@@ -50,12 +53,11 @@ fun NavegacionAplicacion(
                         controladorNavegacion.navigate(RutaAplicacion.Inicio.ruta)
                     },
                     alSeleccionarFuncionario = {
-                        controladorNavegacion.navigate(RutaAplicacion.Inicio.ruta)
+                        controladorNavegacion.navigate(RutaAplicacion.GestionUsuarios.ruta)
                     }
                 )
             }
 
-            // Pantalla Principal de Inicio (Socio/Invitado)
             composable(RutaAplicacion.Inicio.ruta) {
                 val estadoInicio by viewModelInicio.estado.collectAsState()
                 val formState by viewModelInicio.formState.collectAsState()
@@ -80,7 +82,6 @@ fun NavegacionAplicacion(
                 )
             }
 
-            // Pantalla de Resumen de Donación (Guía 11)
             composable("resumen") {
                 ResumenDonacionScreen(
                     viewModel = viewModelInicio,
@@ -88,16 +89,41 @@ fun NavegacionAplicacion(
                 )
             }
 
-            // Pantalla de Tienda Solidaria
             composable(RutaAplicacion.Tienda.ruta) {
                 val estadoTienda by viewModelTienda.estado.collectAsState()
 
                 PantallaTienda(
                     claseAnchoVentana = claseAnchoVentana,
                     listaProductos = estadoTienda.listaProductos,
-                    alAgregarAlCarrito = { producto ->
-                        // Acción al presionar comprar
+                    alAgregarAlCarrito = { }
+                )
+            }
+
+            // Nueva Ruta: Registro de Socios
+            composable(RutaAplicacion.RegistroSocio.ruta) {
+                val formUsuarioState by viewModelUsuario.formState.collectAsState()
+
+                PantallaRegistroSocio(
+                    claseAnchoVentana = claseAnchoVentana,
+                    formState = formUsuarioState,
+                    onNombreChange = viewModelUsuario::onNombreChange,
+                    onCorreoChange = viewModelUsuario::onCorreoChange,
+                    onRegistrar = {
+                        viewModelUsuario.registrarSocio {
+                            controladorNavegacion.navigate(RutaAplicacion.Inicio.ruta)
+                        }
                     }
+                )
+            }
+
+            // Nueva Ruta: Gestión de Usuarios para Funcionario
+            composable(RutaAplicacion.GestionUsuarios.ruta) {
+                val listaUsuarios by viewModelUsuario.listaUsuarios.collectAsState()
+
+                PantallaGestionUsuarios(
+                    claseAnchoVentana = claseAnchoVentana,
+                    listaUsuarios = listaUsuarios,
+                    onCambiarRol = viewModelUsuario::cambiarRolUsuario
                 )
             }
         }
