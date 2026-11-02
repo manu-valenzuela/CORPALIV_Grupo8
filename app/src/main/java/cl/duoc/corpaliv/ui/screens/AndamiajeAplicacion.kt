@@ -37,7 +37,6 @@ data class ElementoNavegacion(
     val icono: ImageVector
 )
 
-// Pestañas para Socio / Invitado
 val elementosSocio = listOf(
     ElementoNavegacion("Inicio", RutaAplicacion.SeleccionRol.ruta, Icons.Default.Home),
     ElementoNavegacion("Portal", RutaAplicacion.PortalSocio.ruta, Icons.Default.Info),
@@ -45,7 +44,6 @@ val elementosSocio = listOf(
     ElementoNavegacion("Registrarse", RutaAplicacion.RegistroSocio.ruta, Icons.Default.Person)
 )
 
-// Pestañas para Trabajador / Funcionario
 val elementosTrabajador = listOf(
     ElementoNavegacion("Inicio", RutaAplicacion.SeleccionRol.ruta, Icons.Default.Home),
     ElementoNavegacion("Usuarios", RutaAplicacion.GestionUsuarios.ruta, Icons.Default.AccountCircle),
@@ -62,7 +60,7 @@ fun AndamiajeAplicacion(
     alSeleccionarRuta: (String) -> Unit,
     contenido: @Composable () -> Unit
 ) {
-    // Si la pantalla actual es la de Selección de Rol, se muestra limpia (Sin TopBar ni Barra Inferior)
+    // Si estamos en Selección de Rol, ocultamos las barras
     if (rutaActual == RutaAplicacion.SeleccionRol.ruta) {
         Box(modifier = Modifier.fillMaxSize()) {
             contenido()
@@ -91,130 +89,27 @@ fun AndamiajeAplicacion(
         )
     }
 
-    when (claseAnchoVentana) {
-        WindowWidthSizeClass.Compact -> {
-            Scaffold(
-                topBar = topBarComposable,
-                bottomBar = {
-                    BarraNavegacionInferior(
-                        elementos = elementosNavegacion,
-                        rutaActual = rutaActual,
-                        alSeleccionarRuta = alSeleccionarRuta
+    Scaffold(
+        topBar = topBarComposable,
+        bottomBar = {
+            NavigationBar {
+                elementosNavegacion.forEach { elemento ->
+                    NavigationBarItem(
+                        selected = rutaActual == elemento.ruta,
+                        onClick = { alSeleccionarRuta(elemento.ruta) },
+                        icon = { Icon(elemento.icono, contentDescription = elemento.titulo) },
+                        label = { Text(elemento.titulo) }
                     )
                 }
-            ) { padding ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding)
-                ) {
-                    contenido()
-                }
             }
         }
-        WindowWidthSizeClass.Medium -> {
-            Scaffold(
-                topBar = topBarComposable
-            ) { padding ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding)
-                ) {
-                    RielNavegacionLateral(
-                        elementos = elementosNavegacion,
-                        rutaActual = rutaActual,
-                        alSeleccionarRuta = alSeleccionarRuta
-                    )
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        contenido()
-                    }
-                }
-            }
-        }
-        WindowWidthSizeClass.Expanded -> {
-            PermanentNavigationDrawer(
-                drawerContent = {
-                    PermanentDrawerSheet {
-                        elementosNavegacion.forEach { elemento ->
-                            NavigationDrawerItem(
-                                label = { Text(elemento.titulo) },
-                                selected = rutaActual == elemento.ruta,
-                                onClick = { alSeleccionarRuta(elemento.ruta) },
-                                icon = { Icon(elemento.icono, contentDescription = elemento.titulo) }
-                            )
-                        }
-                    }
-                }
-            ) {
-                Scaffold(
-                    topBar = topBarComposable
-                ) { padding ->
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(padding)
-                    ) {
-                        contenido()
-                    }
-                }
-            }
-        }
-        else -> {
-            Scaffold(
-                topBar = topBarComposable,
-                bottomBar = {
-                    BarraNavegacionInferior(
-                        elementos = elementosNavegacion,
-                        rutaActual = rutaActual,
-                        alSeleccionarRuta = alSeleccionarRuta
-                    )
-                }
-            ) { padding ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding)
-                ) {
-                    contenido()
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun BarraNavegacionInferior(
-    elementos: List<ElementoNavegacion>,
-    rutaActual: String,
-    alSeleccionarRuta: (String) -> Unit
-) {
-    NavigationBar {
-        elementos.forEach { elemento ->
-            NavigationBarItem(
-                selected = rutaActual == elemento.ruta,
-                onClick = { alSeleccionarRuta(elemento.ruta) },
-                icon = { Icon(elemento.icono, contentDescription = elemento.titulo) },
-                label = { Text(elemento.titulo) }
-            )
-        }
-    }
-}
-
-@Composable
-private fun RielNavegacionLateral(
-    elementos: List<ElementoNavegacion>,
-    rutaActual: String,
-    alSeleccionarRuta: (String) -> Unit
-) {
-    NavigationRail {
-        elementos.forEach { elemento ->
-            NavigationRailItem(
-                selected = rutaActual == elemento.ruta,
-                onClick = { alSeleccionarRuta(elemento.ruta) },
-                icon = { Icon(elemento.icono, contentDescription = elemento.titulo) },
-                label = { Text(elemento.titulo) }
-            )
+    ) { padding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            contenido()
         }
     }
 }

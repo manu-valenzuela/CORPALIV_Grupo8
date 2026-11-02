@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 class ViewModelUsuario(application: Application) : AndroidViewModel(application) {
 
@@ -146,7 +145,7 @@ class ViewModelUsuario(application: Application) : AndroidViewModel(application)
             viewModelScope.launch {
                 val estado = _formState.value
                 val nuevoUsuario = Usuario(
-                    id = UUID.randomUUID().toString(),
+                    id = "U-${System.currentTimeMillis()}", // ID simple sin UUID
                     nombre = estado.nombre,
                     apellido = estado.apellido,
                     rut = estado.rut,

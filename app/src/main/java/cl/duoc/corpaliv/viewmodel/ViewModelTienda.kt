@@ -1,60 +1,50 @@
 package cl.duoc.corpaliv.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import cl.duoc.corpaliv.model.Producto
+import cl.duoc.corpaliv.model.Venta
+import cl.duoc.corpaliv.repository.RepositorioTienda
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.update
 
 data class EstadoPantallaTienda(
-    val cargando: Boolean = false,
     val listaProductos: List<Producto> = emptyList(),
-    val error: String? = null
+    val listaVentas: List<Venta> = emptyList(),
+    val mensajeConfirmacion: String? = null
 )
 
 class ViewModelTienda : ViewModel() {
+
+    private val repositorioTienda = RepositorioTienda()
 
     private val _estado = MutableStateFlow(EstadoPantallaTienda())
     val estado: StateFlow<EstadoPantallaTienda> = _estado.asStateFlow()
 
     init {
-        cargarProductos()
+        cargarDatos()
     }
 
-    fun cargarProductos() {
-        viewModelScope.launch {
-            _estado.value = _estado.value.copy(cargando = true)
+    private fun cargarDatos() {
+        val productos = repositorioTienda.obtenerProductos()
+        _estado.update { it.copy(listaProductos = productos) }
+    }
 
-            val productosEstaticos = listOf(
-                Producto(
-                    id = "p1",
-                    nombre = "Agenda Institucional 2026",
-                    descripcion = "Agenda encuadernada con ilustraciones creadas por los estudiantes.",
-                    precio = 12500.0,
-                    urlImagen = ""
-                ),
-                Producto(
-                    id = "p2",
-                    nombre = "Tazón Solidario CORPALIV",
-                    descripcion = "Tazón cerámico de 350 ml con diseño exclusivo.",
-                    precio = 6500.0,
-                    urlImagen = ""
-                ),
-                Producto(
-                    id = "p3",
-                    nombre = "Bolsa Ecológica de Tela",
-                    descripcion = "Bolsa de algodón orgánico reutilizable.",
-                    precio = 4500.0,
-                    urlImagen = ""
-                )
-            )
+    fun realizarCompraDirecta(producto: Producto, cantidad: Int) {
+        if (cantidad <= 0) return
 
-            _estado.value = EstadoPantallaTienda(
-                cargando = false,
-                listaProductos = productosEstaticos
+        val venta = repositorioTienda.registrarVenta(producto, cantidad)
+
+        _estado.update { estadoActual ->
+            estadoActual.copy(
+                listaVentas = repositorioTienda.ventas.value,
+                mensajeConfirmacion = "¡Compra confirmada! ${venta.cantidad}x ${venta.nombreProducto} ($${venta.precioTotal.toInt()})"
             )
         }
+    }
+
+    fun limpiarMensaje() {
+        _estado.update { it.copy(mensajeConfirmacion = null) }
     }
 }
