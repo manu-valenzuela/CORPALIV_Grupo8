@@ -36,34 +36,6 @@ fun PantallaInicio(
                 onMontoChange = onMontoChange,
                 onConfirmarDonacion = onConfirmarDonacion
             )
-        },
-        pantallaMediana = {
-            PantallaInicioMediana(
-                cargando = cargando,
-                listaNoticias = listaNoticias,
-                proximoEvento = proximoEvento,
-                formState = formState,
-                mostrarMensajeAnimado = mostrarMensajeAnimado,
-                mensajePersistido = mensajePersistido,
-                onNombreChange = onNombreChange,
-                onCorreoChange = onCorreoChange,
-                onMontoChange = onMontoChange,
-                onConfirmarDonacion = onConfirmarDonacion
-            )
-        },
-        pantallaExpandida = {
-            PantallaInicioExpandida(
-                cargando = cargando,
-                listaNoticias = listaNoticias,
-                proximoEvento = proximoEvento,
-                formState = formState,
-                mostrarMensajeAnimado = mostrarMensajeAnimado,
-                mensajePersistido = mensajePersistido,
-                onNombreChange = onNombreChange,
-                onCorreoChange = onCorreoChange,
-                onMontoChange = onMontoChange,
-                onConfirmarDonacion = onConfirmarDonacion
-            )
         }
     )
 }

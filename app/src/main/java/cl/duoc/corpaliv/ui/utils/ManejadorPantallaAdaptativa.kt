@@ -7,13 +7,13 @@ import androidx.compose.runtime.Composable
 fun SeleccionarPantallaAdaptativa(
     claseAnchoVentana: WindowWidthSizeClass,
     pantallaCompacta: @Composable () -> Unit,
-    pantallaMediana: @Composable () -> Unit,
-    pantallaExpandida: @Composable () -> Unit
+    pantallaMediana: (@Composable () -> Unit)? = null,
+    pantallaExpandida: (@Composable () -> Unit)? = null
 ) {
     when (claseAnchoVentana) {
         WindowWidthSizeClass.Compact -> pantallaCompacta()
-        WindowWidthSizeClass.Medium -> pantallaMediana()
-        WindowWidthSizeClass.Expanded -> pantallaExpandida()
+        WindowWidthSizeClass.Medium -> (pantallaMediana ?: pantallaCompacta)()
+        WindowWidthSizeClass.Expanded -> (pantallaExpandida ?: pantallaCompacta)()
         else -> pantallaCompacta()
     }
 }

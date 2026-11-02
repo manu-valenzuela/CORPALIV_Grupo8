@@ -18,18 +18,6 @@ fun PantallaTienda(
                 listaProductos = listaProductos,
                 alAgregarAlCarrito = alAgregarAlCarrito
             )
-        },
-        pantallaMediana = {
-            PantallaTiendaMediana(
-                listaProductos = listaProductos,
-                alAgregarAlCarrito = alAgregarAlCarrito
-            )
-        },
-        pantallaExpandida = {
-            PantallaTiendaExpandida(
-                listaProductos = listaProductos,
-                alAgregarAlCarrito = alAgregarAlCarrito
-            )
         }
     )
 }
