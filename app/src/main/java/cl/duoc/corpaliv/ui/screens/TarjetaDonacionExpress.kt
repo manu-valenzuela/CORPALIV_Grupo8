@@ -10,7 +10,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import cl.duoc.corpaliv.model.DonacionUiState
@@ -28,16 +27,22 @@ fun TarjetaDonacionExpress(
 ) {
     val context = LocalContext.current
 
-    // Animar color del botón según si los campos principales están llenos (Guía 12)
+    // Animar color del botón usando valores del tema global (MaterialTheme.colorScheme)
     val colorBotonAnimado by animateColorAsState(
-        targetValue = if (formState.nombre.isNotBlank() && formState.monto.isNotBlank()) Color(0xFF0052CC) else Color(0xFF7986CB),
+        targetValue = if (formState.nombre.isNotBlank() && formState.monto.isNotBlank()) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            MaterialTheme.colorScheme.outline
+        },
         animationSpec = tween(durationMillis = 500),
         label = "colorBoton"
     )
 
     Card(
         modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -48,7 +53,6 @@ fun TarjetaDonacionExpress(
                 style = MaterialTheme.typography.titleMedium
             )
 
-            // Registro persistente leído desde DataStore (Guía 12)[cite: 75]
             if (mensajePersistido.isNotBlank()) {
                 Text(
                     text = mensajePersistido,
@@ -57,7 +61,6 @@ fun TarjetaDonacionExpress(
                 )
             }
 
-            // Campo Nombre (Guía 11)[cite: 84, 85]
             OutlinedTextField(
                 value = formState.nombre,
                 onValueChange = onNombreChange,
@@ -70,7 +73,6 @@ fun TarjetaDonacionExpress(
                 singleLine = true
             )
 
-            // Campo Correo (Guía 11)[cite: 85]
             OutlinedTextField(
                 value = formState.correo,
                 onValueChange = onCorreoChange,
@@ -83,7 +85,6 @@ fun TarjetaDonacionExpress(
                 singleLine = true
             )
 
-            // Campo Monto (Guía 11)[cite: 84, 85]
             OutlinedTextField(
                 value = formState.monto,
                 onValueChange = onMontoChange,
@@ -98,7 +99,6 @@ fun TarjetaDonacionExpress(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            // Botón con color animado (Guías 11 y 12)[cite: 76, 86]
             Button(
                 onClick = onConfirmarDonacion,
                 colors = ButtonDefaults.buttonColors(containerColor = colorBotonAnimado),
@@ -107,16 +107,15 @@ fun TarjetaDonacionExpress(
                 Text("Registrar Donación")
             }
 
-            // Animación de feedback mediante AnimatedVisibility (Guía 12)[cite: 77]
+            // Animación de feedback usando el color de acento/primario del tema
             AnimatedVisibility(visible = mostrarMensajeAnimado) {
                 Text(
                     text = "¡Estado guardado exitosamente en DataStore!",
-                    color = Color(0xFF4CAF50),
+                    color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
 
-            // Recurso Nativo: Intent del sistema para realizar llamadas telefónicas directas
             OutlinedButton(
                 onClick = {
                     val intent = Intent(Intent.ACTION_DIAL).apply {
@@ -126,7 +125,7 @@ fun TarjetaDonacionExpress(
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Llamar a Central CORPALIV (Recurso Nativo)")
+                Text("Llamar a CORPALIV")
             }
         }
     }

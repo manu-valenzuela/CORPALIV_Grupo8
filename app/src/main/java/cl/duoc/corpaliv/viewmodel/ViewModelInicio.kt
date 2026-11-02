@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import cl.duoc.corpaliv.model.DonacionErrores
+import cl.duoc.corpaliv.model.DonacionExpress
 import cl.duoc.corpaliv.model.DonacionUiState
 import cl.duoc.corpaliv.model.Evento
 import cl.duoc.corpaliv.model.Noticia
@@ -13,6 +14,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 data class EstadoPantallaInicio(
     val cargando: Boolean = true,
@@ -31,6 +35,9 @@ class ViewModelInicio(application: Application) : AndroidViewModel(application) 
     private val _formState = MutableStateFlow(DonacionUiState())
     val formState: StateFlow<DonacionUiState> = _formState
 
+    private val _listaDonaciones = MutableStateFlow<List<DonacionExpress>>(emptyList())
+    val listaDonaciones: StateFlow<List<DonacionExpress>> = _listaDonaciones
+
     private val _mostrarMensaje = MutableStateFlow(false)
     val mostrarMensaje: StateFlow<Boolean> = _mostrarMensaje
 
@@ -42,8 +49,7 @@ class ViewModelInicio(application: Application) : AndroidViewModel(application) 
     fun cargarDatosInicio() {
         viewModelScope.launch {
             _estado.update { it.copy(cargando = true) }
-
-            delay(1200)
+            delay(1000)
 
             val noticias = listOf(
                 Noticia("1", "Proyecto Impulso Laboral Alba Lab", "Formación laboral y acompañamiento para personas con discapacidad múltiple.", "", "2026-10-15"),
@@ -66,6 +72,11 @@ class ViewModelInicio(application: Application) : AndroidViewModel(application) 
         viewModelScope.launch {
             donacionDataStore.obtenerUltimaDonacion().collect { registro ->
                 _estado.update { it.copy(mensajePersistido = registro) }
+            }
+        }
+        viewModelScope.launch {
+            donacionDataStore.obtenerDonaciones().collect { donaciones ->
+                _listaDonaciones.value = donaciones
             }
         }
     }
@@ -98,9 +109,21 @@ class ViewModelInicio(application: Application) : AndroidViewModel(application) 
     fun realizarDonacion(onExito: () -> Unit) {
         if (validarFormulario()) {
             viewModelScope.launch {
-                donacionDataStore.guardarDonacion(_formState.value.nombre, _formState.value.monto)
+                val fechaActual = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date())
+                val idDonacion = "D-${System.currentTimeMillis()}"
+                val montoDouble = _formState.value.monto.toDoubleOrNull() ?: 0.0
+
+                val nuevaDonacion = DonacionExpress(
+                    id = idDonacion,
+                    nombre = _formState.value.nombre,
+                    correo = _formState.value.correo,
+                    monto = montoDouble,
+                    fecha = fechaActual
+                )
+
+                donacionDataStore.guardarDonacion(nuevaDonacion)
                 _mostrarMensaje.value = true
-                delay(2000)
+                delay(1500)
                 _mostrarMensaje.value = false
                 onExito()
             }

@@ -130,6 +130,17 @@ fun NavegacionAplicacion(
                     onCambiarRol = viewModelUsuario::cambiarRolUsuario
                 )
             }
+
+            composable(RutaAplicacion.GestionDonaciones.ruta) {
+                val listaDonaciones by viewModelInicio.listaDonaciones.collectAsState()
+                val listaUsuarios by viewModelUsuario.listaUsuarios.collectAsState()
+
+                PantallaGestionDonaciones(
+                    claseAnchoVentana = claseAnchoVentana,
+                    listaDonaciones = listaDonaciones,
+                    listaUsuarios = listaUsuarios
+                )
+            }
         }
     }
 }

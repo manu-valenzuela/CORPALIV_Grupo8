@@ -1,7 +1,6 @@
 package cl.duoc.corpaliv.ui.screens
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -11,16 +10,12 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material.icons.filled.ShoppingBag
+import androidx.compose.material.icons.filled.VolunteerActivism
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.NavigationRail
-import androidx.compose.material3.NavigationRailItem
-import androidx.compose.material3.PermanentDrawerSheet
-import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -47,6 +42,7 @@ val elementosSocio = listOf(
 val elementosTrabajador = listOf(
     ElementoNavegacion("Inicio", RutaAplicacion.SeleccionRol.ruta, Icons.Default.Home),
     ElementoNavegacion("Usuarios", RutaAplicacion.GestionUsuarios.ruta, Icons.Default.AccountCircle),
+    ElementoNavegacion("Donaciones", RutaAplicacion.GestionDonaciones.ruta, Icons.Default.VolunteerActivism),
     ElementoNavegacion("Ventas", RutaAplicacion.Tienda.ruta, Icons.Default.ShoppingBag),
     ElementoNavegacion("Crear Usuario", RutaAplicacion.RegistroSocio.ruta, Icons.Default.PersonAdd)
 )
@@ -75,6 +71,7 @@ fun AndamiajeAplicacion(
         RutaAplicacion.Tienda.ruta -> if (esTrabajador) "Gestión de Ventas" else "Tienda Solidaria"
         RutaAplicacion.RegistroSocio.ruta -> if (esTrabajador) "Crear Nuevo Usuario" else "Registro de Socio"
         RutaAplicacion.GestionUsuarios.ruta -> "Gestión de Usuarios"
+        RutaAplicacion.GestionDonaciones.ruta -> "Gestión de Donaciones"
         "resumen" -> "Resumen de Aporte"
         else -> "CORPALIV"
     }

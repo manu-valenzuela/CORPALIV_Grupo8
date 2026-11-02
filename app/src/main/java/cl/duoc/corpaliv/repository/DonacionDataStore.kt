@@ -4,27 +4,51 @@ import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import cl.duoc.corpaliv.model.DonacionExpress
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-// Declaramos el DataStore con nombre "preferencias_donacion" (Guía 12)
 val Context.dataStore by preferencesDataStore(name = "preferencias_donacion")
 
 class DonacionDataStore(private val context: Context) {
 
-    // Clave usada para guardar la información (Guía 12)[cite: 75]
+    private val KEY_DONACIONES = stringPreferencesKey("lista_donaciones_express_v1")
     private val ULTIMO_DONANTE = stringPreferencesKey("ultimo_donante")
     private val ULTIMO_MONTO = stringPreferencesKey("ultimo_monto")
 
-    // Función para guardar en DataStore (Guía 12)[cite: 75]
-    suspend fun guardarDonacion(nombre: String, monto: String) {
-        context.dataStore.edit { preferencias ->
-            preferencias[ULTIMO_DONANTE] = nombre
-            preferencias[ULTIMO_MONTO] = monto
+    fun obtenerDonaciones(): Flow<List<DonacionExpress>> {
+        return context.dataStore.data.map { prefs ->
+            val rawData = prefs[KEY_DONACIONES] ?: ""
+            if (rawData.isBlank()) {
+                emptyList()
+            } else {
+                rawData.split("||").mapNotNull { registro ->
+                    val partes = registro.split(";")
+                    if (partes.size >= 5) {
+                        DonacionExpress(
+                            id = partes[0],
+                            nombre = partes[1],
+                            correo = partes[2],
+                            monto = partes[3].toDoubleOrNull() ?: 0.0,
+                            fecha = partes[4]
+                        )
+                    } else null
+                }
+            }
         }
     }
 
-    // Función para obtener los datos como Flow reactivo (Guía 12)[cite: 75]
+    suspend fun guardarDonacion(donacion: DonacionExpress) {
+        context.dataStore.edit { prefs ->
+            val listaActual = (prefs[KEY_DONACIONES] ?: "").split("||").filter { it.isNotBlank() }.toMutableList()
+            val nuevoRegistro = "${donacion.id};${donacion.nombre};${donacion.correo};${donacion.monto};${donacion.fecha}"
+            listaActual.add(0, nuevoRegistro)
+            prefs[KEY_DONACIONES] = listaActual.joinToString("||")
+            prefs[ULTIMO_DONANTE] = donacion.nombre
+            prefs[ULTIMO_MONTO] = donacion.monto.toInt().toString()
+        }
+    }
+
     fun obtenerUltimaDonacion(): Flow<String> {
         return context.dataStore.data.map { preferencias ->
             val nombre = preferencias[ULTIMO_DONANTE] ?: ""
