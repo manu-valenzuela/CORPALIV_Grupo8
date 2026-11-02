@@ -1,24 +1,33 @@
 package cl.duoc.corpaliv.ui.screens
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import android.widget.Toast
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import cl.duoc.corpaliv.model.Producto
 
 @Composable
 fun PantallaTiendaCompacta(
     listaProductos: List<Producto>,
-    alAgregarAlCarrito: (Producto) -> Unit,
+    mensajeConfirmacion: String?,
+    onConfirmarCompra: (Producto, Int) -> Unit,
+    onLimpiarMensaje: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+
+    LaunchedEffect(mensajeConfirmacion) {
+        mensajeConfirmacion?.let {
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+            onLimpiarMensaje()
+        }
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -34,7 +43,7 @@ fun PantallaTiendaCompacta(
         listaProductos.forEach { producto ->
             TarjetaProducto(
                 producto = producto,
-                alAgregarAlCarrito = alAgregarAlCarrito
+                onConfirmarCompra = onConfirmarCompra
             )
         }
     }
