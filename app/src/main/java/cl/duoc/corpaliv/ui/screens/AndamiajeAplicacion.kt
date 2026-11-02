@@ -1,21 +1,26 @@
 package cl.duoc.corpaliv.ui.screens
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ShoppingBag
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.PermanentNavigationDrawer
-import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -30,11 +35,10 @@ data class ElementoNavegacion(
 
 val elementosNavegacion = listOf(
     ElementoNavegacion("Inicio", RutaAplicacion.Inicio.ruta, Icons.Default.Home),
-    ElementoNavegacion("Tienda", RutaAplicacion.Tienda.ruta, Icons.Default.ShoppingBag),
-    //ElementoNavegacion("Escuela", RutaAplicacion.Escuela.ruta, Icons.Default.School),
-    //ElementoNavegacion("Empresas", RutaAplicacion.Empresas.ruta, Icons.Default.Business)
+    ElementoNavegacion("Tienda", RutaAplicacion.Tienda.ruta, Icons.Default.ShoppingBag)
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AndamiajeAplicacion(
     claseAnchoVentana: WindowWidthSizeClass,
@@ -42,9 +46,35 @@ fun AndamiajeAplicacion(
     alSeleccionarRuta: (String) -> Unit,
     contenido: @Composable () -> Unit
 ) {
+    // Si estamos en la pantalla de selección de rol, mostramos solo el contenido a pantalla completa
+    if (rutaActual == RutaAplicacion.SeleccionRol.ruta) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            contenido()
+        }
+        return
+    }
+
+    val tituloPantalla = when (rutaActual) {
+        RutaAplicacion.Inicio.ruta -> "CORPALIV - Inicio"
+        RutaAplicacion.Tienda.ruta -> "Tienda Solidaria"
+        "resumen" -> "Resumen de Aporte"
+        else -> "CORPALIV"
+    }
+
+    val topBarComposable = @Composable {
+        TopAppBar(
+            title = { Text(text = tituloPantalla) },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        )
+    }
+
     when (claseAnchoVentana) {
         WindowWidthSizeClass.Compact -> {
             Scaffold(
+                topBar = topBarComposable,
                 bottomBar = {
                     BarraNavegacionInferior(
                         rutaActual = rutaActual,
@@ -52,13 +82,19 @@ fun AndamiajeAplicacion(
                     )
                 }
             ) { padding ->
-                Row(modifier = Modifier.padding(padding)) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding)
+                ) {
                     contenido()
                 }
             }
         }
         WindowWidthSizeClass.Medium -> {
-            Scaffold { padding ->
+            Scaffold(
+                topBar = topBarComposable
+            ) { padding ->
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
@@ -68,7 +104,9 @@ fun AndamiajeAplicacion(
                         rutaActual = rutaActual,
                         alSeleccionarRuta = alSeleccionarRuta
                     )
-                    contenido()
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        contenido()
+                    }
                 }
             }
         }
@@ -87,12 +125,34 @@ fun AndamiajeAplicacion(
                     }
                 }
             ) {
-                contenido()
+                Scaffold(
+                    topBar = topBarComposable
+                ) { padding ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(padding)
+                    ) {
+                        contenido()
+                    }
+                }
             }
         }
         else -> {
-            Scaffold { padding ->
-                Row(modifier = Modifier.padding(padding)) {
+            Scaffold(
+                topBar = topBarComposable,
+                bottomBar = {
+                    BarraNavegacionInferior(
+                        rutaActual = rutaActual,
+                        alSeleccionarRuta = alSeleccionarRuta
+                    )
+                }
+            ) { padding ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding)
+                ) {
                     contenido()
                 }
             }

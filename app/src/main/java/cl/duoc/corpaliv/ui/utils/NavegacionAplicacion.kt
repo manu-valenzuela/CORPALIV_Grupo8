@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import cl.duoc.corpaliv.ui.screens.AndamiajeAplicacion
 import cl.duoc.corpaliv.ui.screens.PantallaInicio
+import cl.duoc.corpaliv.ui.screens.PantallaSeleccionRol
 import cl.duoc.corpaliv.ui.screens.PantallaTienda
 import cl.duoc.corpaliv.ui.screens.ResumenDonacionScreen
 import cl.duoc.corpaliv.viewmodel.ViewModelInicio
@@ -24,7 +25,7 @@ fun NavegacionAplicacion(
     viewModelTienda: ViewModelTienda = viewModel()
 ) {
     val entradaNavegacionActual by controladorNavegacion.currentBackStackEntryAsState()
-    val rutaActual = entradaNavegacionActual?.destination?.route ?: RutaAplicacion.Inicio.ruta
+    val rutaActual = entradaNavegacionActual?.destination?.route ?: RutaAplicacion.SeleccionRol.ruta
 
     AndamiajeAplicacion(
         claseAnchoVentana = claseAnchoVentana,
@@ -39,9 +40,22 @@ fun NavegacionAplicacion(
     ) {
         NavHost(
             navController = controladorNavegacion,
-            startDestination = RutaAplicacion.Inicio.ruta
+            startDestination = RutaAplicacion.SeleccionRol.ruta
         ) {
-            // Pantalla Principal de Inicio
+            // Pantalla Inicial Adaptativa: Selección de Rol
+            composable(RutaAplicacion.SeleccionRol.ruta) {
+                PantallaSeleccionRol(
+                    claseAnchoVentana = claseAnchoVentana,
+                    alSeleccionarSocioInvitado = {
+                        controladorNavegacion.navigate(RutaAplicacion.Inicio.ruta)
+                    },
+                    alSeleccionarFuncionario = {
+                        controladorNavegacion.navigate(RutaAplicacion.Inicio.ruta)
+                    }
+                )
+            }
+
+            // Pantalla Principal de Inicio (Socio/Invitado)
             composable(RutaAplicacion.Inicio.ruta) {
                 val estadoInicio by viewModelInicio.estado.collectAsState()
                 val formState by viewModelInicio.formState.collectAsState()
@@ -66,7 +80,7 @@ fun NavegacionAplicacion(
                 )
             }
 
-            // Pantalla de Resumen de Donación
+            // Pantalla de Resumen de Donación (Guía 11)
             composable("resumen") {
                 ResumenDonacionScreen(
                     viewModel = viewModelInicio,
