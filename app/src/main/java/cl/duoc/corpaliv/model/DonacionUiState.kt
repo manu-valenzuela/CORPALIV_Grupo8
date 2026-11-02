@@ -1,6 +1,6 @@
 package cl.duoc.corpaliv.model
 
-// Modelo principal que representa el estado del formulario (Guía 11)[cite: 81]
+// Modelo principal que representa el estado del formulario (Guía 11)
 data class DonacionUiState(
     val nombre: String = "",
     val correo: String = "",
@@ -9,7 +9,7 @@ data class DonacionUiState(
     val donacionExitosa: Boolean = false
 )
 
-// Modelo que almacena posibles errores individuales del formulario (Guía 11)[cite: 81]
+// Modelo que almacena posibles errores individuales del formulario (Guía 11)
 data class DonacionErrores(
     val nombre: String? = null,
     val correo: String? = null,
