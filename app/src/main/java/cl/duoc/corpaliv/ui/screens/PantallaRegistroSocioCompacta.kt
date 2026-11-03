@@ -311,5 +311,44 @@ fun PantallaRegistroSocioCompacta(
         ) {
             Text("Completar Registro")
         }
+
+// Resumen de errores debajo del botón
+        val listaErrores = listOfNotNull(
+            state.errores.nombre,
+            state.errores.apellido,
+            state.errores.rut,
+            state.errores.fechaNacimiento,
+            state.errores.direccion,
+            state.errores.donacionMensual,
+            state.errores.correo,
+            state.errores.contrasena
+        )
+
+        if (listaErrores.isNotEmpty()) {
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.errorContainer
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
+            ) {
+                Column(modifier = Modifier.padding(12.dp)) {
+                    Text(
+                        text = "Por favor corrige los siguientes errores:",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onErrorContainer
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    listaErrores.forEach { error ->
+                        Text(
+                            text = "• $error",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                    }
+                }
+            }
+        }
     }
 }
