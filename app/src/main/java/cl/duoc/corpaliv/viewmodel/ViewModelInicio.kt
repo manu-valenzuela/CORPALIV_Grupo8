@@ -95,16 +95,27 @@ class ViewModelInicio(application: Application) : AndroidViewModel(application) 
 
     fun validarFormulario(): Boolean {
         val estadoActual = _formState.value
+        val montoValor = estadoActual.monto.toDoubleOrNull() ?: 0.0
+
+        val errorMonto = when {
+            estadoActual.monto.isBlank() -> "Campo obligatorio"
+            montoValor <= 0 -> "El monto debe ser mayor a $0"
+            montoValor > 1_000_000 -> "El monto máximo permitido es $1.000.000"
+            else -> null
+        }
+
         val errores = DonacionErrores(
             nombre = if (estadoActual.nombre.isBlank()) "Campo obligatorio" else null,
             correo = if (!estadoActual.correo.contains("@")) "Correo inválido" else null,
-            monto = if (estadoActual.monto.isBlank() || (estadoActual.monto.toDoubleOrNull() ?: 0.0) <= 0) "Monto no válido" else null
+            monto = errorMonto
         )
 
         val hayErrores = listOfNotNull(errores.nombre, errores.correo, errores.monto).isNotEmpty()
         _formState.update { it.copy(errores = errores) }
         return !hayErrores
     }
+
+
 
     fun realizarDonacion(onExito: () -> Unit) {
         if (validarFormulario()) {
