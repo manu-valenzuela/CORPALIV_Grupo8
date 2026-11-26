@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import cl.duoc.corpaliv.model.Venta
+import cl.duoc.corpaliv.data.model.Venta
 
 @Composable
 fun PantallaVentasCompacta(

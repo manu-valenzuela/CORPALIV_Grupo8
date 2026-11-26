@@ -27,7 +27,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import cl.duoc.corpaliv.model.OpcionDonacionMensual
+import cl.duoc.corpaliv.data.model.OpcionDonacionMensual
 import cl.duoc.corpaliv.ui.utils.ManejadorUbicacion
 import cl.duoc.corpaliv.viewmodel.ViewModelUsuario
 

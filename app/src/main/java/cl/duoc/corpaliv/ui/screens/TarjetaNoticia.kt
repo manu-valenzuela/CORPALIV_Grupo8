@@ -12,7 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import cl.duoc.corpaliv.model.Noticia
+import cl.duoc.corpaliv.data.model.Noticia
 
 @Composable
 fun TarjetaNoticia(

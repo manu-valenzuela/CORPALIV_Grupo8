@@ -14,9 +14,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import cl.duoc.corpaliv.model.DonacionUiState
-import cl.duoc.corpaliv.model.Evento
-import cl.duoc.corpaliv.model.Noticia
+import cl.duoc.corpaliv.viewmodel.DonacionUiState
+import cl.duoc.corpaliv.data.model.Evento
+import cl.duoc.corpaliv.data.model.Noticia
 
 @Composable
 fun PantallaInicioCompacta(

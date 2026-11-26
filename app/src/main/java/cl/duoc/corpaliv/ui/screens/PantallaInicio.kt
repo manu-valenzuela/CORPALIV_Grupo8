@@ -2,9 +2,9 @@ package cl.duoc.corpaliv.ui.screens
 
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import cl.duoc.corpaliv.model.DonacionUiState
-import cl.duoc.corpaliv.model.Evento
-import cl.duoc.corpaliv.model.Noticia
+import cl.duoc.corpaliv.viewmodel.DonacionUiState
+import cl.duoc.corpaliv.data.model.Evento
+import cl.duoc.corpaliv.data.model.Noticia
 import cl.duoc.corpaliv.ui.utils.SeleccionarPantallaAdaptativa
 
 @Composable

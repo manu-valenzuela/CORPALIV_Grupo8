@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import cl.duoc.corpaliv.model.DonacionExpress
+import cl.duoc.corpaliv.data.model.DonacionExpress
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

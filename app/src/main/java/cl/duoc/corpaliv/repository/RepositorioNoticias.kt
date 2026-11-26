@@ -1,7 +1,7 @@
 package cl.duoc.corpaliv.repository
 
-import cl.duoc.corpaliv.model.Evento
-import cl.duoc.corpaliv.model.Noticia
+import cl.duoc.corpaliv.data.model.Evento
+import cl.duoc.corpaliv.data.model.Noticia
 
 class RepositorioNoticias {
 

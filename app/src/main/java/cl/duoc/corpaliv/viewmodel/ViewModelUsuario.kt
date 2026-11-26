@@ -1,13 +1,14 @@
 package cl.duoc.corpaliv.viewmodel
 
 import android.app.Application
+import android.util.Patterns
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import cl.duoc.corpaliv.model.OpcionDonacionMensual
-import cl.duoc.corpaliv.model.RegistroUsuarioErrores
-import cl.duoc.corpaliv.model.RegistroUsuarioUiState
-import cl.duoc.corpaliv.model.RolUsuario
-import cl.duoc.corpaliv.model.Usuario
+import cl.duoc.corpaliv.data.model.OpcionDonacionMensual
+import cl.duoc.corpaliv.viewmodel.RegistroUsuarioErrores
+import cl.duoc.corpaliv.viewmodel.RegistroUsuarioUiState
+import cl.duoc.corpaliv.data.model.RolUsuario
+import cl.duoc.corpaliv.data.model.Usuario
 import cl.duoc.corpaliv.repository.UsuarioDataStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -103,7 +104,7 @@ class ViewModelUsuario(application: Application) : AndroidViewModel(application)
             fechaNacimiento = if (estado.fechaNacimiento.isBlank()) "Selecciona una fecha" else null,
             direccion = if (estado.direccion.isBlank()) "La dirección es obligatoria" else null,
             donacionMensual = if (!montoValido) "El monto mínimo es $1.000" else null,
-            correo = if (!android.util.Patterns.EMAIL_ADDRESS.matcher(estado.correo).matches()) "Correo no válido" else null,
+            correo = if (!Patterns.EMAIL_ADDRESS.matcher(estado.correo).matches()) "Correo no válido" else null,
             contrasena = if (estado.contrasena.length < 6) "Mínimo 6 caracteres" else null
         )
 

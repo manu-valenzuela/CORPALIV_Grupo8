@@ -12,7 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import cl.duoc.corpaliv.model.DonacionUiState
+import cl.duoc.corpaliv.viewmodel.DonacionUiState
 
 @Composable
 fun TarjetaDonacionExpress(

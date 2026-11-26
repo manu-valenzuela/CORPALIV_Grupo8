@@ -1,4 +1,4 @@
-package cl.duoc.corpaliv.model
+package cl.duoc.corpaliv.viewmodel
 
 // Modelo principal que representa el estado del formulario (Guía 11)
 data class DonacionUiState(

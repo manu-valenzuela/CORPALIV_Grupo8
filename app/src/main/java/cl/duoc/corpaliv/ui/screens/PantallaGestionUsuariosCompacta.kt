@@ -25,8 +25,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import cl.duoc.corpaliv.model.RolUsuario
-import cl.duoc.corpaliv.model.Usuario
+import cl.duoc.corpaliv.data.model.RolUsuario
+import cl.duoc.corpaliv.data.model.Usuario
 
 @Composable
 fun PantallaGestionUsuariosCompacta(

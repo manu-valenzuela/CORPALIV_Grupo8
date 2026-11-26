@@ -1,4 +1,4 @@
-package cl.duoc.corpaliv.model
+package cl.duoc.corpaliv.data.model
 
 data class DonacionExpress(
     val id: String,

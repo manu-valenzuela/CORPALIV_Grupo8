@@ -1,8 +1,8 @@
 package cl.duoc.corpaliv.viewmodel
 
 import androidx.lifecycle.ViewModel
-import cl.duoc.corpaliv.model.Producto
-import cl.duoc.corpaliv.model.Venta
+import cl.duoc.corpaliv.data.model.Producto
+import cl.duoc.corpaliv.data.model.Venta
 import cl.duoc.corpaliv.repository.RepositorioTienda
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

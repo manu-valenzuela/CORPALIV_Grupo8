@@ -1,7 +1,7 @@
 package cl.duoc.corpaliv.repository
 
-import cl.duoc.corpaliv.model.Producto
-import cl.duoc.corpaliv.model.Venta
+import cl.duoc.corpaliv.data.model.Producto
+import cl.duoc.corpaliv.data.model.Venta
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

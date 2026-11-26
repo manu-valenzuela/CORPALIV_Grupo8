@@ -3,11 +3,9 @@ package cl.duoc.corpaliv.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import cl.duoc.corpaliv.model.DonacionErrores
-import cl.duoc.corpaliv.model.DonacionExpress
-import cl.duoc.corpaliv.model.DonacionUiState
-import cl.duoc.corpaliv.model.Evento
-import cl.duoc.corpaliv.model.Noticia
+import cl.duoc.corpaliv.data.model.DonacionExpress
+import cl.duoc.corpaliv.data.model.Evento
+import cl.duoc.corpaliv.data.model.Noticia
 import cl.duoc.corpaliv.repository.DonacionDataStore
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import cl.duoc.corpaliv.model.Producto
+import cl.duoc.corpaliv.data.model.Producto
 
 @Composable
 fun TarjetaProducto(
