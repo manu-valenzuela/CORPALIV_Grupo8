@@ -63,14 +63,12 @@ fun NavegacionAplicacion(
             composable(RutaAplicacion.PortalSocio.ruta) {
                 val estadoInicio by viewModelInicio.estado.collectAsState()
                 val formState by viewModelInicio.formState.collectAsState()
-                val mostrarMensaje by viewModelInicio.mostrarMensaje.collectAsState()
 
                 PantallaInicio(
                     claseAnchoVentana = claseAnchoVentana,
                     cargando = estadoInicio.cargando,
                     listaNoticias = estadoInicio.listaNoticias,
                     formState = formState,
-                    mostrarMensajeAnimado = mostrarMensaje,
                     mensajePersistido = estadoInicio.mensajePersistido,
                     onNombreChange = viewModelInicio::onNombreChange,
                     onCorreoChange = viewModelInicio::onCorreoChange,
@@ -103,9 +101,8 @@ fun NavegacionAplicacion(
                     PantallaTienda(
                         claseAnchoVentana = claseAnchoVentana,
                         listaProductos = estadoTienda.listaProductos,
-                        mensajeConfirmacion = estadoTienda.mensajeConfirmacion,
-                        onConfirmarCompra = viewModelTienda::realizarCompraDirecta,
-                        onLimpiarMensaje = viewModelTienda::limpiarMensaje
+                        compraExitosa = estadoTienda.compraExitosa,
+                        onConfirmarCompra = viewModelTienda::realizarCompraDirecta
                     )
                 }
             }

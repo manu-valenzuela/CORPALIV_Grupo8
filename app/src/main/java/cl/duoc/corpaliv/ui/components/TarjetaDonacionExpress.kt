@@ -2,7 +2,6 @@ package cl.duoc.corpaliv.ui.components
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
@@ -17,7 +16,6 @@ import cl.duoc.corpaliv.viewmodel.DonacionUiState
 @Composable
 fun TarjetaDonacionExpress(
     formState: DonacionUiState,
-    mostrarMensajeAnimado: Boolean,
     mensajePersistido: String,
     onNombreChange: (String) -> Unit,
     onCorreoChange: (String) -> Unit,
@@ -101,20 +99,17 @@ fun TarjetaDonacionExpress(
 
             Button(
                 onClick = onConfirmarDonacion,
+                enabled = !formState.donacionExitosa,
                 colors = ButtonDefaults.buttonColors(containerColor = colorBotonAnimado),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Registrar Donación")
             }
 
-            // Animación de feedback usando el color de acento/primario del tema
-            AnimatedVisibility(visible = mostrarMensajeAnimado) {
-                Text(
-                    text = "¡Estado guardado exitosamente en DataStore!",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
+            AvisoExito(
+                visible = formState.donacionExitosa,
+                mensaje = "¡Gracias por tu donación!"
+            )
 
             OutlinedButton(
                 onClick = {

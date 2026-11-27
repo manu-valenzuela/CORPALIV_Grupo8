@@ -14,5 +14,6 @@ data class RegistroUsuarioUiState(
     val correo: String = "",
     val contrasena: String = "",
     val cargandoUbicacion: Boolean = false,
+    val registroExitoso: Boolean = false,
     val errores: RegistroUsuarioErrores = RegistroUsuarioErrores()
 )

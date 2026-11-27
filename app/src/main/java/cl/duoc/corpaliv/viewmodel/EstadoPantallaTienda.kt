@@ -6,5 +6,5 @@ import cl.duoc.corpaliv.data.model.Venta
 data class EstadoPantallaTienda(
     val listaProductos: List<Producto> = emptyList(),
     val listaVentas: List<Venta> = emptyList(),
-    val mensajeConfirmacion: String? = null
+    val compraExitosa: Boolean = false
 )

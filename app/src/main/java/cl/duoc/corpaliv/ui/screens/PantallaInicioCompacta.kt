@@ -24,7 +24,6 @@ fun PantallaInicioCompacta(
     cargando: Boolean,
     listaNoticias: List<Noticia>,
     formState: DonacionUiState,
-    mostrarMensajeAnimado: Boolean,
     mensajePersistido: String,
     onNombreChange: (String) -> Unit,
     onCorreoChange: (String) -> Unit,
@@ -64,7 +63,6 @@ fun PantallaInicioCompacta(
 
                 TarjetaDonacionExpress(
                     formState = formState,
-                    mostrarMensajeAnimado = mostrarMensajeAnimado,
                     mensajePersistido = mensajePersistido,
                     onNombreChange = onNombreChange,
                     onCorreoChange = onCorreoChange,

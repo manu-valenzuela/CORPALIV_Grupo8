@@ -27,6 +27,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import cl.duoc.corpaliv.ui.components.AvisoExito
 import cl.duoc.corpaliv.data.model.OpcionDonacionMensual
 import cl.duoc.corpaliv.ui.utils.ManejadorUbicacion
 import cl.duoc.corpaliv.viewmodel.ViewModelUsuario
@@ -305,12 +306,18 @@ fun PantallaRegistroSocioCompacta(
 
         Button(
             onClick = { viewModelUsuario.registrarSocio(onRegistroExitoso) },
+            enabled = !state.registroExitoso,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 12.dp)
         ) {
             Text("Completar Registro")
         }
+
+        AvisoExito(
+            visible = state.registroExitoso,
+            mensaje = "¡Registro completado con éxito!"
+        )
 
 // Resumen de errores debajo del botón
         val listaErrores = listOfNotNull(

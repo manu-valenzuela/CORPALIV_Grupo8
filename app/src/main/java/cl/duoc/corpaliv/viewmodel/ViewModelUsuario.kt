@@ -10,6 +10,7 @@ import cl.duoc.corpaliv.viewmodel.RegistroUsuarioUiState
 import cl.duoc.corpaliv.data.model.RolUsuario
 import cl.duoc.corpaliv.data.model.Usuario
 import cl.duoc.corpaliv.repository.UsuarioDataStore
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -154,6 +155,8 @@ class ViewModelUsuario(application: Application) : AndroidViewModel(application)
                     correo = estado.correo
                 )
                 usuarioDataStore.guardarUsuario(nuevoUsuario)
+                _formState.update { it.copy(registroExitoso = true) }
+                delay(2000)
                 _formState.value = RegistroUsuarioUiState()
                 onExito()
             }
