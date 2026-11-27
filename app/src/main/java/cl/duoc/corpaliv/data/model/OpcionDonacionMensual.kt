@@ -28,4 +28,14 @@ sealed class OpcionDonacionMensual(
         etiqueta = "$$montoLibre",
         impacto = "Aporte voluntario directo a los programas de CORPALIV"
     )
+
+    companion object {
+        // Convierte el monto guardado en el microservicio en la opción correspondiente
+        fun desdeMonto(monto: Int): OpcionDonacionMensual = when (monto) {
+            CincoMil.monto -> CincoMil
+            QuinceMil.monto -> QuinceMil
+            VeinticincoMil.monto -> VeinticincoMil
+            else -> Personalizado(monto)
+        }
+    }
 }

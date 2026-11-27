@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import cl.duoc.corpaliv.data.model.RolUsuario
 import cl.duoc.corpaliv.ui.components.AndamiajeAplicacion
 import cl.duoc.corpaliv.ui.screens.*
 import cl.duoc.corpaliv.viewmodel.*
@@ -18,20 +19,26 @@ fun NavegacionAplicacion(
     viewModelInicio: ViewModelInicio = viewModel(),
     viewModelTienda: ViewModelTienda = viewModel(),
     viewModelUsuario: ViewModelUsuario = viewModel(),
-    viewModelIndicadores: ViewModelIndicadores = viewModel()
+    viewModelIndicadores: ViewModelIndicadores = viewModel(),
+    viewModelSesion: ViewModelSesion = viewModel()
 ) {
     val entradaNavegacionActual by controladorNavegacion.currentBackStackEntryAsState()
     val rutaActual = entradaNavegacionActual?.destination?.route ?: RutaAplicacion.SeleccionRol.ruta
 
-    var esTrabajador by remember { mutableStateOf(false) }
+    // El rol sale de la sesión iniciada (null = invitado)
+    val sesion by viewModelSesion.sesion.collectAsState()
+    val esTrabajador = sesion?.rol == RolUsuario.Funcionario
     val indicadores by viewModelIndicadores.estado.collectAsState()
 
     AndamiajeAplicacion(
         claseAnchoVentana = claseAnchoVentana,
         rutaActual = rutaActual,
         esTrabajador = esTrabajador,
+        sesionIniciada = sesion != null,
         alSeleccionarRuta = { nuevaRuta ->
             if (nuevaRuta == RutaAplicacion.SeleccionRol.ruta) {
+                // Volver al inicio cierra la sesión
+                viewModelSesion.cerrarSesion()
                 controladorNavegacion.navigate(RutaAplicacion.SeleccionRol.ruta) {
                     popUpTo(0) { inclusive = true }
                 }
@@ -51,13 +58,34 @@ fun NavegacionAplicacion(
             composable(RutaAplicacion.SeleccionRol.ruta) {
                 PantallaSeleccionRol(
                     claseAnchoVentana = claseAnchoVentana,
-                    alSeleccionarSocioInvitado = {
-                        esTrabajador = false
-                        controladorNavegacion.navigate(RutaAplicacion.PortalSocio.ruta)
+                    alIniciarSesion = {
+                        controladorNavegacion.navigate(RutaAplicacion.Login.ruta)
                     },
-                    alSeleccionarFuncionario = {
-                        esTrabajador = true
-                        controladorNavegacion.navigate(RutaAplicacion.GestionUsuarios.ruta)
+                    alContinuarComoInvitado = {
+                        controladorNavegacion.navigate(RutaAplicacion.PortalSocio.ruta)
+                    }
+                )
+            }
+
+            composable(RutaAplicacion.Login.ruta) {
+                val estadoLogin by viewModelSesion.estado.collectAsState()
+
+                PantallaLogin(
+                    claseAnchoVentana = claseAnchoVentana,
+                    estado = estadoLogin,
+                    onCorreoChange = viewModelSesion::onCorreoChange,
+                    onContrasenaChange = viewModelSesion::onContrasenaChange,
+                    onIniciarSesion = {
+                        viewModelSesion.iniciarSesion { rol ->
+                            val destino = if (rol == RolUsuario.Funcionario) RutaAplicacion.GestionUsuarios.ruta
+                            else RutaAplicacion.PortalSocio.ruta
+                            controladorNavegacion.navigate(destino) {
+                                popUpTo(RutaAplicacion.SeleccionRol.ruta)
+                            }
+                        }
+                    },
+                    onCrearCuenta = {
+                        controladorNavegacion.navigate(RutaAplicacion.RegistroSocio.ruta)
                     }
                 )
             }
@@ -113,7 +141,14 @@ fun NavegacionAplicacion(
                         estado = estadoTienda,
                         onSumarCantidad = viewModelTienda::sumarCantidad,
                         onRestarCantidad = viewModelTienda::restarCantidad,
-                        onConfirmarCompra = viewModelTienda::realizarCompraDirecta,
+                        onConfirmarCompra = { producto ->
+                            // Comprar pide iniciar sesión
+                            if (sesion == null) {
+                                controladorNavegacion.navigate(RutaAplicacion.Login.ruta)
+                            } else {
+                                viewModelTienda.realizarCompraDirecta(producto)
+                            }
+                        },
                         indicadores = indicadores,
                         onCambiarConversion = viewModelIndicadores::cambiarMostrarConversion
                     )
@@ -151,6 +186,7 @@ fun NavegacionAplicacion(
             }
 
             composable(RutaAplicacion.GestionUsuarios.ruta) {
+                LaunchedEffect(Unit) { viewModelUsuario.cargarUsuarios() }
                 val listaUsuarios by viewModelUsuario.listaUsuarios.collectAsState()
 
                 PantallaGestionUsuarios(
@@ -164,7 +200,10 @@ fun NavegacionAplicacion(
             }
 
             composable(RutaAplicacion.GestionDonaciones.ruta) {
-                LaunchedEffect(Unit) { viewModelInicio.cargarDonaciones() }
+                LaunchedEffect(Unit) {
+                    viewModelInicio.cargarDonaciones()
+                    viewModelUsuario.cargarUsuarios()
+                }
                 val listaDonaciones by viewModelInicio.listaDonaciones.collectAsState()
                 val listaUsuarios by viewModelUsuario.listaUsuarios.collectAsState()
 

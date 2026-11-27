@@ -33,6 +33,8 @@ object RetrofitCorpaliv {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
+    val auth: AuthApiService by lazy { crear(8081).create(AuthApiService::class.java) }
+    val usuarios: UsuariosApiService by lazy { crear(8082).create(UsuariosApiService::class.java) }
     val donaciones: DonacionesApiService by lazy { crear(8083).create(DonacionesApiService::class.java) }
     val noticias: NoticiasApiService by lazy { crear(8084).create(NoticiasApiService::class.java) }
     val ventas: VentasApiService by lazy { crear(8085).create(VentasApiService::class.java) }

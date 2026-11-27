@@ -300,6 +300,14 @@ fun PantallaRegistroSocioCompacta(
             Text("Completar Registro")
         }
 
+        estado.errorEnvio?.let {
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+
         AvisoExito(
             visible = estado.registroExitoso,
             mensaje = "¡Registro completado con éxito!"

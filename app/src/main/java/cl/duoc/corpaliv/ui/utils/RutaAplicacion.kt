@@ -2,6 +2,7 @@ package cl.duoc.corpaliv.ui.utils
 
 sealed class RutaAplicacion(val ruta: String) {
     data object SeleccionRol : RutaAplicacion("seleccion_rol")
+    data object Login : RutaAplicacion("login")
     data object PortalSocio : RutaAplicacion("portal_socio")
     data object ResumenDonacion : RutaAplicacion("resumen_donacion")
     data object Tienda : RutaAplicacion("tienda")

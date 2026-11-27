@@ -108,7 +108,7 @@ fun PantallaGestionUsuariosCompacta(
 
         if (listaUsuarios.isEmpty()) {
             Text(
-                text = "No hay usuarios registrados aún en DataStore.",
+                text = "No hay usuarios registrados aún.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -119,7 +119,7 @@ fun PantallaGestionUsuariosCompacta(
                 items(listaUsuarios, key = { it.id }) { usuario ->
                     TarjetaUsuarioGestion(
                         usuario = usuario,
-                        onCambiarRol = { nuevoRol -> onCambiarRol(usuario.id, nuevoRol) }
+                        onCambiarRol = { nuevoRol -> onCambiarRol(usuario.correo, nuevoRol) }
                     )
                 }
             }

@@ -27,7 +27,6 @@ fun TarjetaUsuarioGestion(
 ) {
     val rolesDisponibles = listOf(
         RolUsuario.Socio,
-        RolUsuario.Voluntario,
         RolUsuario.Funcionario
     )
 

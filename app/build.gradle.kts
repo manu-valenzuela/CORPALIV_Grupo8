@@ -56,7 +56,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
     implementation("androidx.compose.material3:material3-window-size-class")
 
-    implementation("androidx.datastore:datastore-preferences:1.1.0")
 
     // Carga de imágenes desde URL
     implementation(libs.coil.compose)
