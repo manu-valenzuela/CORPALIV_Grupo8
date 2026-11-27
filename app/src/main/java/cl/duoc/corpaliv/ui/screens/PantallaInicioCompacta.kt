@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cl.duoc.corpaliv.viewmodel.EstadoIndicadores
 import cl.duoc.corpaliv.ui.components.TarjetaDonacionExpress
 import cl.duoc.corpaliv.ui.components.TarjetaNoticia
 import cl.duoc.corpaliv.viewmodel.DonacionUiState
@@ -29,6 +30,8 @@ fun PantallaInicioCompacta(
     onCorreoChange: (String) -> Unit,
     onMontoChange: (String) -> Unit,
     onConfirmarDonacion: () -> Unit,
+    indicadores: EstadoIndicadores,
+    onCambiarConversion: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (cargando) {
@@ -67,7 +70,9 @@ fun PantallaInicioCompacta(
                     onNombreChange = onNombreChange,
                     onCorreoChange = onCorreoChange,
                     onMontoChange = onMontoChange,
-                    onConfirmarDonacion = onConfirmarDonacion
+                    onConfirmarDonacion = onConfirmarDonacion,
+                    indicadores = indicadores,
+                    onCambiarConversion = onCambiarConversion
                 )
 
 

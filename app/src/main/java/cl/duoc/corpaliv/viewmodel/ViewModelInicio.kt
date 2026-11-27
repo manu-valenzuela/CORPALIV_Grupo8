@@ -4,8 +4,8 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import cl.duoc.corpaliv.data.model.DonacionExpress
-import cl.duoc.corpaliv.data.model.Noticia
 import cl.duoc.corpaliv.repository.DonacionDataStore
+import cl.duoc.corpaliv.repository.RepositorioNoticias
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,6 +18,7 @@ import java.util.Locale
 class ViewModelInicio(application: Application) : AndroidViewModel(application) {
 
     private val donacionDataStore = DonacionDataStore(application)
+    private val repositorioNoticias = RepositorioNoticias()
 
     private val _estado = MutableStateFlow(EstadoPantallaInicio())
     val estado: StateFlow<EstadoPantallaInicio> = _estado
@@ -38,10 +39,8 @@ class ViewModelInicio(application: Application) : AndroidViewModel(application) 
             _estado.update { it.copy(cargando = true) }
             delay(1000)
 
-            val noticias = listOf(
-                Noticia("1", "Proyecto Impulso Laboral Alba Lab", "Formación laboral y acompañamiento para personas con discapacidad múltiple.", "", "2026-10-15"),
-                Noticia("2", "Escuela Jan Van Dijk amplía matrícula", "Acreditación ministerial permite aumentar la cobertura educativa.", "", "2026-10-10")
-            )
+            val noticias = repositorioNoticias.obtenerNoticias()
+
             _estado.update {
                 it.copy(
                     cargando = false,

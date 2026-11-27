@@ -11,6 +11,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import cl.duoc.corpaliv.ui.components.TextoEnDolaresYUf
+import cl.duoc.corpaliv.ui.components.InterruptorConversion
+import cl.duoc.corpaliv.viewmodel.EstadoIndicadores
 import cl.duoc.corpaliv.ui.components.TarjetaDonadorExpress
 import cl.duoc.corpaliv.data.model.DonacionExpress
 import cl.duoc.corpaliv.data.model.Usuario
@@ -19,6 +22,8 @@ import cl.duoc.corpaliv.data.model.Usuario
 fun PantallaGestionDonacionesCompacta(
     listaDonaciones: List<DonacionExpress>,
     listaUsuarios: List<Usuario>,
+    indicadores: EstadoIndicadores,
+    onCambiarConversion: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val totalExpress = listaDonaciones.sumOf { it.monto }
@@ -32,6 +37,12 @@ fun PantallaGestionDonacionesCompacta(
     ) {
 
         Spacer(modifier = Modifier.height(12.dp))
+
+        InterruptorConversion(
+            texto = "Ver totales en dólares y UF",
+            indicadores = indicadores,
+            onCambiar = onCambiarConversion
+        )
 
         // Tarjeta de Resumen
         Card(
@@ -51,17 +62,20 @@ fun PantallaGestionDonacionesCompacta(
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
+                    TextoEnDolaresYUf(montoPesos = totalAcumuladoGeneral, indicadores = indicadores)
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "• Donaciones Express: $ ${totalExpress.toInt()}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
+                    TextoEnDolaresYUf(montoPesos = totalExpress, indicadores = indicadores)
                     Text(
                         text = "• Compromiso Socios: $ $totalComprometidoSocios / mes",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
+                    TextoEnDolaresYUf(montoPesos = totalComprometidoSocios.toDouble(), indicadores = indicadores)
                 }
                 Icon(
                     imageVector = Icons.Default.VolunteerActivism,

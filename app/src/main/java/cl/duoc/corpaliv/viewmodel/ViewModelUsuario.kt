@@ -1,7 +1,6 @@
 package cl.duoc.corpaliv.viewmodel
 
 import android.app.Application
-import android.util.Patterns
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import cl.duoc.corpaliv.data.ManejadorUbicacion
@@ -135,7 +134,7 @@ class ViewModelUsuario(application: Application) : AndroidViewModel(application)
             fechaNacimiento = if (estado.fechaNacimiento.isBlank()) "Selecciona una fecha" else null,
             direccion = if (estado.direccion.isBlank()) "La dirección es obligatoria" else null,
             donacionMensual = if (!montoValido) "El monto mínimo es $1.000" else null,
-            correo = if (!Patterns.EMAIL_ADDRESS.matcher(estado.correo).matches()) "Correo no válido" else null,
+            correo = if (!REGEX_CORREO.matches(estado.correo.trim())) "Correo no válido" else null,
             contrasena = if (estado.contrasena.length < 6) "Mínimo 6 caracteres" else null
         )
 
@@ -201,5 +200,9 @@ class ViewModelUsuario(application: Application) : AndroidViewModel(application)
         viewModelScope.launch {
             usuarioDataStore.actualizarRolUsuario(idUsuario, nuevoRol)
         }
+    }
+
+    private companion object {
+        val REGEX_CORREO = Regex("^[\\w.+-]+@[\\w-]+\\.[\\w.-]+$")
     }
 }

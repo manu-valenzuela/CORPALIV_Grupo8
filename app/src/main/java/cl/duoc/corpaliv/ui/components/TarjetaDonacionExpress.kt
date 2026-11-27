@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import cl.duoc.corpaliv.viewmodel.EstadoIndicadores
 import cl.duoc.corpaliv.viewmodel.DonacionUiState
 
 @Composable
@@ -21,6 +22,8 @@ fun TarjetaDonacionExpress(
     onCorreoChange: (String) -> Unit,
     onMontoChange: (String) -> Unit,
     onConfirmarDonacion: () -> Unit,
+    indicadores: EstadoIndicadores,
+    onCambiarConversion: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -93,6 +96,17 @@ fun TarjetaDonacionExpress(
                 },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
+            )
+
+            TextoEnDolares(
+                montoPesos = formState.monto.toDoubleOrNull() ?: 0.0,
+                indicadores = indicadores
+            )
+
+            InterruptorConversion(
+                texto = "Ver monto en dólares",
+                indicadores = indicadores,
+                onCambiar = onCambiarConversion
             )
 
             Spacer(modifier = Modifier.height(4.dp))
