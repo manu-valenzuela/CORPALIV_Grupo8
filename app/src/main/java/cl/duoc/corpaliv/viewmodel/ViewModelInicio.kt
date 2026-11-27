@@ -16,13 +16,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-data class EstadoPantallaInicio(
-    val cargando: Boolean = true,
-    val listaNoticias: List<Noticia> = emptyList(),
-    val proximoEvento: Evento? = null,
-    val mensajePersistido: String = ""
-)
-
 class ViewModelInicio(application: Application) : AndroidViewModel(application) {
 
     private val donacionDataStore = DonacionDataStore(application)

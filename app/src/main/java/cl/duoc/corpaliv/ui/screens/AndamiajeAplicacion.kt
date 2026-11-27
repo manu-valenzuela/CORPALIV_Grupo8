@@ -25,12 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import cl.duoc.corpaliv.ui.utils.RutaAplicacion
 
-data class ElementoNavegacion(
-    val titulo: String,
-    val ruta: String,
-    val icono: ImageVector
-)
-
 val elementosSocio = listOf(
     ElementoNavegacion("Inicio", RutaAplicacion.SeleccionRol.ruta, Icons.Default.Home),
     ElementoNavegacion("Portal", RutaAplicacion.PortalSocio.ruta, Icons.Default.Info),

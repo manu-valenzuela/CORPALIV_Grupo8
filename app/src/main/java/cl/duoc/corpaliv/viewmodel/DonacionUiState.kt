@@ -9,9 +9,3 @@ data class DonacionUiState(
     val donacionExitosa: Boolean = false
 )
 
-// Modelo que almacena posibles errores individuales del formulario (Guía 11)
-data class DonacionErrores(
-    val nombre: String? = null,
-    val correo: String? = null,
-    val monto: String? = null
-)

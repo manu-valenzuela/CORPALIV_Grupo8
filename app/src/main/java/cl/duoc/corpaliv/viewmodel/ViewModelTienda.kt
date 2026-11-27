@@ -8,13 +8,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-
-data class EstadoPantallaTienda(
-    val listaProductos: List<Producto> = emptyList(),
-    val listaVentas: List<Venta> = emptyList(),
-    val mensajeConfirmacion: String? = null
-)
-
 class ViewModelTienda : ViewModel() {
 
     private val repositorioTienda = RepositorioTienda()
