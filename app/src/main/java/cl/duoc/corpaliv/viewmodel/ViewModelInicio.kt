@@ -28,9 +28,6 @@ class ViewModelInicio(application: Application) : AndroidViewModel(application) 
     private val _listaDonaciones = MutableStateFlow<List<DonacionExpress>>(emptyList())
     val listaDonaciones: StateFlow<List<DonacionExpress>> = _listaDonaciones
 
-    private val _mostrarMensaje = MutableStateFlow(false)
-    val mostrarMensaje: StateFlow<Boolean> = _mostrarMensaje
-
     init {
         cargarDatosInicio()
         observarDonacionesDataStore()
@@ -119,9 +116,9 @@ class ViewModelInicio(application: Application) : AndroidViewModel(application) 
                 )
 
                 donacionDataStore.guardarDonacion(nuevaDonacion)
-                _mostrarMensaje.value = true
-                delay(1500)
-                _mostrarMensaje.value = false
+                _formState.update { it.copy(donacionExitosa = true) }
+                delay(2000)
+                _formState.update { it.copy(donacionExitosa = false) }
                 onExito()
             }
         }

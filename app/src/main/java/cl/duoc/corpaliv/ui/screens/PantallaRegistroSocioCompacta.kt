@@ -2,7 +2,6 @@ package cl.duoc.corpaliv.ui.screens
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -27,64 +26,51 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import cl.duoc.corpaliv.ui.components.AvisoExito
 import cl.duoc.corpaliv.data.model.OpcionDonacionMensual
-import cl.duoc.corpaliv.ui.utils.ManejadorUbicacion
-import cl.duoc.corpaliv.viewmodel.ViewModelUsuario
+import cl.duoc.corpaliv.viewmodel.RegistroUsuarioUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaRegistroSocioCompacta(
-    viewModelUsuario: ViewModelUsuario,
-    onRegistroExitoso: () -> Unit
+    estado: RegistroUsuarioUiState,
+    onNombreChange: (String) -> Unit,
+    onApellidoChange: (String) -> Unit,
+    onRutChange: (String) -> Unit,
+    onFechaNacimientoChange: (String) -> Unit,
+    onDireccionChange: (String) -> Unit,
+    onDonacionChange: (OpcionDonacionMensual) -> Unit,
+    onMontoPersonalizadoChange: (String) -> Unit,
+    onCorreoChange: (String) -> Unit,
+    onContrasenaChange: (String) -> Unit,
+    onAlternarContrasena: () -> Unit,
+    onObtenerUbicacion: () -> Unit,
+    onPermisoUbicacionDenegado: () -> Unit,
+    onRegistrar: () -> Unit
 ) {
     val context = LocalContext.current
-    val state by viewModelUsuario.formState.collectAsState()
     val scrollState = rememberScrollState()
 
-    var passwordVisible by remember { mutableStateOf(false) }
-    var montoPersonalizadoTexto by remember { mutableStateOf("") }
-    var esPersonalizadoSeleccionado by remember { mutableStateOf(false) }
-
-    val manejadorUbicacion = remember { ManejadorUbicacion(context) }
-
-    val locationLauncher = rememberLauncherForActivityResult(
+    // El permiso de ubicación debe pedirse desde la UI (requisito de Android)
+    val lanzadorPermiso = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { concedido ->
-        if (concedido) {
-            viewModelUsuario.setCargandoUbicacion(true)
-            manejadorUbicacion.obtenerUbicacionActual(
-                onResultado = { dir, lat, lng ->
-                    viewModelUsuario.onDireccionChange(dir, lat, lng)
-                    viewModelUsuario.setCargandoUbicacion(false)
-                },
-                onError = { err ->
-                    Toast.makeText(context, err, Toast.LENGTH_SHORT).show()
-                    viewModelUsuario.setCargandoUbicacion(false)
-                }
-            )
+        if (concedido) onObtenerUbicacion() else onPermisoUbicacionDenegado()
+    }
+
+    fun solicitarUbicacion() {
+        val permiso = Manifest.permission.ACCESS_FINE_LOCATION
+        if (ContextCompat.checkSelfPermission(context, permiso) == PackageManager.PERMISSION_GRANTED) {
+            onObtenerUbicacion()
         } else {
-            Toast.makeText(context, "Permiso de ubicación denegado", Toast.LENGTH_SHORT).show()
+            lanzadorPermiso.launch(permiso)
         }
     }
 
-    fun obtenerUbicacion() {
-        val permiso = Manifest.permission.ACCESS_FINE_LOCATION
-        if (ContextCompat.checkSelfPermission(context, permiso) == PackageManager.PERMISSION_GRANTED) {
-            viewModelUsuario.setCargandoUbicacion(true)
-            manejadorUbicacion.obtenerUbicacionActual(
-                onResultado = { dir, lat, lng ->
-                    viewModelUsuario.onDireccionChange(dir, lat, lng)
-                    viewModelUsuario.setCargandoUbicacion(false)
-                },
-                onError = { err ->
-                    Toast.makeText(context, err, Toast.LENGTH_SHORT).show()
-                    viewModelUsuario.setCargandoUbicacion(false)
-                }
-            )
-        } else {
-            locationLauncher.launch(permiso)
-        }
-    }
+    // Datos derivados del estado (no son estado nuevo)
+    val personalizado = estado.donacionMensual as? OpcionDonacionMensual.Personalizado
+    val esPersonalizado = personalizado != null
+    val textoMontoPersonalizado = personalizado?.montoLibre?.takeIf { it > 0 }?.toString() ?: ""
 
     Column(
         modifier = Modifier
@@ -96,55 +82,56 @@ fun PantallaRegistroSocioCompacta(
 
         // --- Datos Personales ---
         OutlinedTextField(
-            value = state.nombre,
-            onValueChange = { viewModelUsuario.onNombreChange(it) },
+            value = estado.nombre,
+            onValueChange = onNombreChange,
             label = { Text("Nombre") },
-            isError = state.errores.nombre != null,
-            supportingText = { state.errores.nombre?.let { Text(it) } },
+            isError = estado.errores.nombre != null,
+            supportingText = { estado.errores.nombre?.let { Text(it) } },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             modifier = Modifier.fillMaxWidth()
         )
 
         OutlinedTextField(
-            value = state.apellido,
-            onValueChange = { viewModelUsuario.onApellidoChange(it) },
+            value = estado.apellido,
+            onValueChange = onApellidoChange,
             label = { Text("Apellido") },
-            isError = state.errores.apellido != null,
-            supportingText = { state.errores.apellido?.let { Text(it) } },
+            isError = estado.errores.apellido != null,
+            supportingText = { estado.errores.apellido?.let { Text(it) } },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             modifier = Modifier.fillMaxWidth()
         )
 
         OutlinedTextField(
-            value = state.rut,
-            onValueChange = { viewModelUsuario.onRutChange(it) },
+            value = estado.rut,
+            onValueChange = onRutChange,
             label = { Text("RUT (ej: 12345678-K)") },
-            isError = state.errores.rut != null,
-            supportingText = { state.errores.rut?.let { Text(it) } },
+            isError = estado.errores.rut != null,
+            supportingText = { estado.errores.rut?.let { Text(it) } },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
             modifier = Modifier.fillMaxWidth()
         )
 
         OutlinedTextField(
-            value = state.fechaNacimiento,
-            onValueChange = { viewModelUsuario.onFechaNacimientoChange(it) },
+            value = estado.fechaNacimiento,
+            onValueChange = onFechaNacimientoChange,
             label = { Text("Fecha Nacimiento (DD/MM/AAAA)") },
-            isError = state.errores.fechaNacimiento != null,
-            supportingText = { state.errores.fechaNacimiento?.let { Text(it) } },
+            isError = estado.errores.fechaNacimiento != null,
+            supportingText = { estado.errores.fechaNacimiento?.let { Text(it) } },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
             modifier = Modifier.fillMaxWidth()
         )
 
         // --- Dirección con GPS ---
+        val errorDireccion = estado.errores.direccion ?: estado.errorUbicacion
         OutlinedTextField(
-            value = state.direccion,
-            onValueChange = { viewModelUsuario.onDireccionChange(it) },
+            value = estado.direccion,
+            onValueChange = onDireccionChange,
             label = { Text("Dirección de Residencia") },
-            isError = state.errores.direccion != null,
-            supportingText = { state.errores.direccion?.let { Text(it) } },
+            isError = errorDireccion != null,
+            supportingText = { errorDireccion?.let { Text(it) } },
             trailingIcon = {
-                IconButton(onClick = { obtenerUbicacion() }) {
-                    if (state.cargandoUbicacion) {
+                IconButton(onClick = { solicitarUbicacion() }) {
+                    if (estado.cargandoUbicacion) {
                         CircularProgressIndicator(modifier = Modifier.size(24.dp))
                     } else {
                         Icon(
@@ -172,14 +159,11 @@ fun PantallaRegistroSocioCompacta(
         )
 
         opcionesFijas.forEach { opcion ->
-            val seleccionada = !esPersonalizadoSeleccionado && state.donacionMensual.javaClass == opcion.javaClass
+            val seleccionada = estado.donacionMensual == opcion
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable {
-                        esPersonalizadoSeleccionado = false
-                        viewModelUsuario.onDonacionChange(opcion)
-                    },
+                    .clickable { onDonacionChange(opcion) },
                 colors = CardDefaults.cardColors(
                     containerColor = if (seleccionada) MaterialTheme.colorScheme.primaryContainer
                     else MaterialTheme.colorScheme.surfaceVariant
@@ -193,10 +177,7 @@ fun PantallaRegistroSocioCompacta(
                 ) {
                     RadioButton(
                         selected = seleccionada,
-                        onClick = {
-                            esPersonalizadoSeleccionado = false
-                            viewModelUsuario.onDonacionChange(opcion)
-                        }
+                        onClick = { onDonacionChange(opcion) }
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Column {
@@ -217,27 +198,19 @@ fun PantallaRegistroSocioCompacta(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable {
-                    esPersonalizadoSeleccionado = true
-                    val montoInt = montoPersonalizadoTexto.toIntOrNull() ?: 0
-                    viewModelUsuario.onDonacionChange(OpcionDonacionMensual.Personalizado(montoInt))
-                },
+                .clickable { onMontoPersonalizadoChange(textoMontoPersonalizado) },
             colors = CardDefaults.cardColors(
-                containerColor = if (esPersonalizadoSeleccionado) MaterialTheme.colorScheme.primaryContainer
+                containerColor = if (esPersonalizado) MaterialTheme.colorScheme.primaryContainer
                 else MaterialTheme.colorScheme.surfaceVariant
             ),
-            border = if (esPersonalizadoSeleccionado) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else null,
+            border = if (esPersonalizado) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else null,
             shape = RoundedCornerShape(10.dp)
         ) {
             Column(modifier = Modifier.padding(12.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     RadioButton(
-                        selected = esPersonalizadoSeleccionado,
-                        onClick = {
-                            esPersonalizadoSeleccionado = true
-                            val montoInt = montoPersonalizadoTexto.toIntOrNull() ?: 0
-                            viewModelUsuario.onDonacionChange(OpcionDonacionMensual.Personalizado(montoInt))
-                        }
+                        selected = esPersonalizado,
+                        onClick = { onMontoPersonalizadoChange(textoMontoPersonalizado) }
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
@@ -246,15 +219,10 @@ fun PantallaRegistroSocioCompacta(
                     )
                 }
 
-                if (esPersonalizadoSeleccionado) {
+                if (esPersonalizado) {
                     OutlinedTextField(
-                        value = montoPersonalizadoTexto,
-                        onValueChange = { texto ->
-                            val filtrado = texto.filter { it.isDigit() }
-                            montoPersonalizadoTexto = filtrado
-                            val montoInt = filtrado.toIntOrNull() ?: 0
-                            viewModelUsuario.onDonacionChange(OpcionDonacionMensual.Personalizado(montoInt))
-                        },
+                        value = textoMontoPersonalizado,
+                        onValueChange = onMontoPersonalizadoChange,
                         label = { Text("Monto voluntario ($)") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
                         modifier = Modifier
@@ -265,7 +233,7 @@ fun PantallaRegistroSocioCompacta(
             }
         }
 
-        state.errores.donacionMensual?.let { err ->
+        estado.errores.donacionMensual?.let { err ->
             Text(
                 text = err,
                 color = MaterialTheme.colorScheme.error,
@@ -275,36 +243,37 @@ fun PantallaRegistroSocioCompacta(
 
         // --- Credenciales ---
         OutlinedTextField(
-            value = state.correo,
-            onValueChange = { viewModelUsuario.onCorreoChange(it) },
+            value = estado.correo,
+            onValueChange = onCorreoChange,
             label = { Text("Correo Electrónico") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
-            isError = state.errores.correo != null,
-            supportingText = { state.errores.correo?.let { Text(it) } },
+            isError = estado.errores.correo != null,
+            supportingText = { estado.errores.correo?.let { Text(it) } },
             modifier = Modifier.fillMaxWidth()
         )
 
         OutlinedTextField(
-            value = state.contrasena,
-            onValueChange = { viewModelUsuario.onContrasenaChange(it) },
+            value = estado.contrasena,
+            onValueChange = onContrasenaChange,
             label = { Text("Contraseña") },
-            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            visualTransformation = if (estado.contrasenaVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
             trailingIcon = {
-                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                IconButton(onClick = onAlternarContrasena) {
                     Icon(
-                        imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                        imageVector = if (estado.contrasenaVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                         contentDescription = "Mostrar Contraseña"
                     )
                 }
             },
-            isError = state.errores.contrasena != null,
-            supportingText = { state.errores.contrasena?.let { Text(it) } },
+            isError = estado.errores.contrasena != null,
+            supportingText = { estado.errores.contrasena?.let { Text(it) } },
             modifier = Modifier.fillMaxWidth()
         )
 
         Button(
-            onClick = { viewModelUsuario.registrarSocio(onRegistroExitoso) },
+            onClick = onRegistrar,
+            enabled = !estado.registroExitoso,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 12.dp)
@@ -312,16 +281,21 @@ fun PantallaRegistroSocioCompacta(
             Text("Completar Registro")
         }
 
-// Resumen de errores debajo del botón
+        AvisoExito(
+            visible = estado.registroExitoso,
+            mensaje = "¡Registro completado con éxito!"
+        )
+
+        // Resumen de errores debajo del botón
         val listaErrores = listOfNotNull(
-            state.errores.nombre,
-            state.errores.apellido,
-            state.errores.rut,
-            state.errores.fechaNacimiento,
-            state.errores.direccion,
-            state.errores.donacionMensual,
-            state.errores.correo,
-            state.errores.contrasena
+            estado.errores.nombre,
+            estado.errores.apellido,
+            estado.errores.rut,
+            estado.errores.fechaNacimiento,
+            estado.errores.direccion,
+            estado.errores.donacionMensual,
+            estado.errores.correo,
+            estado.errores.contrasena
         )
 
         if (listaErrores.isNotEmpty()) {

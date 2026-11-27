@@ -63,14 +63,12 @@ fun NavegacionAplicacion(
             composable(RutaAplicacion.PortalSocio.ruta) {
                 val estadoInicio by viewModelInicio.estado.collectAsState()
                 val formState by viewModelInicio.formState.collectAsState()
-                val mostrarMensaje by viewModelInicio.mostrarMensaje.collectAsState()
 
                 PantallaInicio(
                     claseAnchoVentana = claseAnchoVentana,
                     cargando = estadoInicio.cargando,
                     listaNoticias = estadoInicio.listaNoticias,
                     formState = formState,
-                    mostrarMensajeAnimado = mostrarMensaje,
                     mensajePersistido = estadoInicio.mensajePersistido,
                     onNombreChange = viewModelInicio::onNombreChange,
                     onCorreoChange = viewModelInicio::onCorreoChange,
@@ -84,9 +82,11 @@ fun NavegacionAplicacion(
             }
 
             composable("resumen") {
+                val formState by viewModelInicio.formState.collectAsState()
+
                 PantallaResumenDonacion(
                     claseAnchoVentana = claseAnchoVentana,
-                    viewModel = viewModelInicio,
+                    formState = formState,
                     alVolver = { controladorNavegacion.popBackStack() }
                 )
             }
@@ -102,21 +102,37 @@ fun NavegacionAplicacion(
                 } else {
                     PantallaTienda(
                         claseAnchoVentana = claseAnchoVentana,
-                        listaProductos = estadoTienda.listaProductos,
-                        mensajeConfirmacion = estadoTienda.mensajeConfirmacion,
-                        onConfirmarCompra = viewModelTienda::realizarCompraDirecta,
-                        onLimpiarMensaje = viewModelTienda::limpiarMensaje
+                        estado = estadoTienda,
+                        onSumarCantidad = viewModelTienda::sumarCantidad,
+                        onRestarCantidad = viewModelTienda::restarCantidad,
+                        onConfirmarCompra = viewModelTienda::realizarCompraDirecta
                     )
                 }
             }
 
             composable(RutaAplicacion.RegistroSocio.ruta) {
+                val estadoRegistro by viewModelUsuario.formState.collectAsState()
+
                 PantallaRegistroSocio(
-                    viewModelUsuario = viewModelUsuario,
-                    onRegistroExitoso = {
-                        val destino = if (esTrabajador) RutaAplicacion.GestionUsuarios.ruta else RutaAplicacion.PortalSocio.ruta
-                        controladorNavegacion.navigate(destino) {
-                            popUpTo(destino) { inclusive = true }
+                    estado = estadoRegistro,
+                    onNombreChange = viewModelUsuario::onNombreChange,
+                    onApellidoChange = viewModelUsuario::onApellidoChange,
+                    onRutChange = viewModelUsuario::onRutChange,
+                    onFechaNacimientoChange = viewModelUsuario::onFechaNacimientoChange,
+                    onDireccionChange = { viewModelUsuario.onDireccionChange(it) },
+                    onDonacionChange = viewModelUsuario::onDonacionChange,
+                    onMontoPersonalizadoChange = viewModelUsuario::onMontoPersonalizadoChange,
+                    onCorreoChange = viewModelUsuario::onCorreoChange,
+                    onContrasenaChange = viewModelUsuario::onContrasenaChange,
+                    onAlternarContrasena = viewModelUsuario::onAlternarContrasena,
+                    onObtenerUbicacion = viewModelUsuario::obtenerUbicacion,
+                    onPermisoUbicacionDenegado = viewModelUsuario::onPermisoUbicacionDenegado,
+                    onRegistrar = {
+                        viewModelUsuario.registrarSocio {
+                            val destino = if (esTrabajador) RutaAplicacion.GestionUsuarios.ruta else RutaAplicacion.PortalSocio.ruta
+                            controladorNavegacion.navigate(destino) {
+                                popUpTo(destino) { inclusive = true }
+                            }
                         }
                     }
                 )

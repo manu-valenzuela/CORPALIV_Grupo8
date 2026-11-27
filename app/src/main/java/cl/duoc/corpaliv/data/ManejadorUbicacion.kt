@@ -1,4 +1,4 @@
-package cl.duoc.corpaliv.ui.utils
+package cl.duoc.corpaliv.data
 
 import android.annotation.SuppressLint
 import android.content.Context

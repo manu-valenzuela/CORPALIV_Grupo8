@@ -4,23 +4,24 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import cl.duoc.corpaliv.data.model.Producto
 import cl.duoc.corpaliv.ui.utils.SeleccionarPantallaAdaptativa
+import cl.duoc.corpaliv.viewmodel.EstadoPantallaTienda
 
 @Composable
 fun PantallaTienda(
     claseAnchoVentana: WindowWidthSizeClass,
-    listaProductos: List<Producto>,
-    mensajeConfirmacion: String?,
-    onConfirmarCompra: (Producto, Int) -> Unit,
-    onLimpiarMensaje: () -> Unit
+    estado: EstadoPantallaTienda,
+    onSumarCantidad: (String) -> Unit,
+    onRestarCantidad: (String) -> Unit,
+    onConfirmarCompra: (Producto) -> Unit
 ) {
     SeleccionarPantallaAdaptativa(
         claseAnchoVentana = claseAnchoVentana,
         pantallaCompacta = {
             PantallaTiendaCompacta(
-                listaProductos = listaProductos,
-                mensajeConfirmacion = mensajeConfirmacion,
-                onConfirmarCompra = onConfirmarCompra,
-                onLimpiarMensaje = onLimpiarMensaje
+                estado = estado,
+                onSumarCantidad = onSumarCantidad,
+                onRestarCantidad = onRestarCantidad,
+                onConfirmarCompra = onConfirmarCompra
             )
         }
     )
