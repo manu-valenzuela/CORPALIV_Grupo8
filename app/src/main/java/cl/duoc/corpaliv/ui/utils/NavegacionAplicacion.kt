@@ -100,8 +100,9 @@ fun NavegacionAplicacion(
                 } else {
                     PantallaTienda(
                         claseAnchoVentana = claseAnchoVentana,
-                        listaProductos = estadoTienda.listaProductos,
-                        compraExitosa = estadoTienda.compraExitosa,
+                        estado = estadoTienda,
+                        onSumarCantidad = viewModelTienda::sumarCantidad,
+                        onRestarCantidad = viewModelTienda::restarCantidad,
                         onConfirmarCompra = viewModelTienda::realizarCompraDirecta
                     )
                 }

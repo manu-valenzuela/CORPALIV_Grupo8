@@ -1,11 +1,19 @@
 package cl.duoc.corpaliv.ui.components
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -15,11 +23,13 @@ import cl.duoc.corpaliv.data.model.Producto
 @Composable
 fun TarjetaProducto(
     producto: Producto,
-    onConfirmarCompra: (Producto, Int) -> Unit,
+    cantidad: Int,
+    onSumar: () -> Unit,
+    onRestar: () -> Unit,
+    onConfirmarCompra: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var cantidad by remember { mutableIntStateOf(1) }
-    val precioTotal = producto.precio * cantidad
+    val precioTotal = (producto.precio * cantidad).toInt()
 
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -62,20 +72,28 @@ fun TarjetaProducto(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     OutlinedIconButton(
-                        onClick = { if (cantidad > 1) cantidad-- },
+                        onClick = onRestar,
+                        enabled = cantidad > 1,
                         modifier = Modifier.size(36.dp)
                     ) {
                         Icon(Icons.Default.Remove, contentDescription = "Restar")
                     }
 
-                    Text(
-                        text = "$cantidad",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
+                    // El número se desliza hacia arriba al sumar y hacia abajo al restar
+                    AnimatedContent(
+                        targetState = cantidad,
+                        transitionSpec = { transicionNumero() },
+                        label = "cantidad"
+                    ) { valor ->
+                        Text(
+                            text = "$valor",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
 
                     OutlinedIconButton(
-                        onClick = { cantidad++ },
+                        onClick = onSumar,
                         modifier = Modifier.size(36.dp)
                     ) {
                         Icon(Icons.Default.Add, contentDescription = "Sumar")
@@ -95,22 +113,38 @@ fun TarjetaProducto(
                     text = "Total:",
                     style = MaterialTheme.typography.titleSmall
                 )
-                Text(
-                    text = "$ ${precioTotal.toInt()}",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold
-                )
+                AnimatedContent(
+                    targetState = precioTotal,
+                    transitionSpec = { transicionNumero() },
+                    label = "total"
+                ) { valor ->
+                    Text(
+                        text = "$ $valor",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(12.dp))
 
             Button(
-                onClick = { onConfirmarCompra(producto, cantidad) },
+                onClick = onConfirmarCompra,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Confirmar Compra ($ ${precioTotal.toInt()})")
+                Text("Confirmar Compra ($ $precioTotal)")
             }
         }
     }
 }
+
+// Si el número sube, entra desde abajo; si baja, entra desde arriba
+private fun AnimatedContentTransitionScope<Int>.transicionNumero(): ContentTransform =
+    if (targetState > initialState) {
+        (slideInVertically { altura -> altura } + fadeIn()) togetherWith
+                (slideOutVertically { altura -> -altura } + fadeOut())
+    } else {
+        (slideInVertically { altura -> -altura } + fadeIn()) togetherWith
+                (slideOutVertically { altura -> altura } + fadeOut())
+    }

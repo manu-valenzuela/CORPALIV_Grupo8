@@ -9,12 +9,14 @@ import androidx.compose.ui.unit.dp
 import cl.duoc.corpaliv.ui.components.AvisoExito
 import cl.duoc.corpaliv.ui.components.TarjetaProducto
 import cl.duoc.corpaliv.data.model.Producto
+import cl.duoc.corpaliv.viewmodel.EstadoPantallaTienda
 
 @Composable
 fun PantallaTiendaCompacta(
-    listaProductos: List<Producto>,
-    compraExitosa: Boolean,
-    onConfirmarCompra: (Producto, Int) -> Unit,
+    estado: EstadoPantallaTienda,
+    onSumarCantidad: (String) -> Unit,
+    onRestarCantidad: (String) -> Unit,
+    onConfirmarCompra: (Producto) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -25,14 +27,17 @@ fun PantallaTiendaCompacta(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         AvisoExito(
-            visible = compraExitosa,
+            visible = estado.compraExitosa,
             mensaje = "¡Compra realizada con éxito!"
         )
 
-        listaProductos.forEach { producto ->
+        estado.listaProductos.forEach { producto ->
             TarjetaProducto(
                 producto = producto,
-                onConfirmarCompra = onConfirmarCompra
+                cantidad = estado.cantidadDe(producto.id),
+                onSumar = { onSumarCantidad(producto.id) },
+                onRestar = { onRestarCantidad(producto.id) },
+                onConfirmarCompra = { onConfirmarCompra(producto) }
             )
         }
     }
