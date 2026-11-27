@@ -82,9 +82,11 @@ fun NavegacionAplicacion(
             }
 
             composable("resumen") {
+                val formState by viewModelInicio.formState.collectAsState()
+
                 PantallaResumenDonacion(
                     claseAnchoVentana = claseAnchoVentana,
-                    viewModel = viewModelInicio,
+                    formState = formState,
                     alVolver = { controladorNavegacion.popBackStack() }
                 )
             }
