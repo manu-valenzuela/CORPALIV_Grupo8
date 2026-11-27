@@ -61,6 +61,10 @@ dependencies {
     // Carga de imágenes desde URL
     implementation(libs.coil.compose)
 
+    // Consumo de API REST (API externa de indicadores)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+
     // AndroidX Core y Lifecycle
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

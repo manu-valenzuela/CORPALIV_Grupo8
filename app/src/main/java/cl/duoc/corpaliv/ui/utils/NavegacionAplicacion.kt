@@ -17,12 +17,14 @@ fun NavegacionAplicacion(
     controladorNavegacion: NavHostController,
     viewModelInicio: ViewModelInicio = viewModel(),
     viewModelTienda: ViewModelTienda = viewModel(),
-    viewModelUsuario: ViewModelUsuario = viewModel()
+    viewModelUsuario: ViewModelUsuario = viewModel(),
+    viewModelIndicadores: ViewModelIndicadores = viewModel()
 ) {
     val entradaNavegacionActual by controladorNavegacion.currentBackStackEntryAsState()
     val rutaActual = entradaNavegacionActual?.destination?.route ?: RutaAplicacion.SeleccionRol.ruta
 
     var esTrabajador by remember { mutableStateOf(false) }
+    val indicadores by viewModelIndicadores.estado.collectAsState()
 
     AndamiajeAplicacion(
         claseAnchoVentana = claseAnchoVentana,
@@ -77,7 +79,9 @@ fun NavegacionAplicacion(
                         viewModelInicio.realizarDonacion {
                             controladorNavegacion.navigate(RutaAplicacion.ResumenDonacion.ruta)
                         }
-                    }
+                    },
+                    indicadores = indicadores,
+                    onCambiarConversion = viewModelIndicadores::cambiarMostrarConversion
                 )
             }
 
@@ -97,7 +101,9 @@ fun NavegacionAplicacion(
                 if (esTrabajador) {
                     PantallaVentas(
                         claseAnchoVentana = claseAnchoVentana,
-                        listaVentas = estadoTienda.listaVentas
+                        listaVentas = estadoTienda.listaVentas,
+                        indicadores = indicadores,
+                        onCambiarConversion = viewModelIndicadores::cambiarMostrarConversion
                     )
                 } else {
                     PantallaTienda(
@@ -105,7 +111,9 @@ fun NavegacionAplicacion(
                         estado = estadoTienda,
                         onSumarCantidad = viewModelTienda::sumarCantidad,
                         onRestarCantidad = viewModelTienda::restarCantidad,
-                        onConfirmarCompra = viewModelTienda::realizarCompraDirecta
+                        onConfirmarCompra = viewModelTienda::realizarCompraDirecta,
+                        indicadores = indicadores,
+                        onCambiarConversion = viewModelIndicadores::cambiarMostrarConversion
                     )
                 }
             }
@@ -134,7 +142,9 @@ fun NavegacionAplicacion(
                                 popUpTo(destino) { inclusive = true }
                             }
                         }
-                    }
+                    },
+                    indicadores = indicadores,
+                    onCambiarConversion = viewModelIndicadores::cambiarMostrarConversion
                 )
             }
 
@@ -158,7 +168,9 @@ fun NavegacionAplicacion(
                 PantallaGestionDonaciones(
                     claseAnchoVentana = claseAnchoVentana,
                     listaDonaciones = listaDonaciones,
-                    listaUsuarios = listaUsuarios
+                    listaUsuarios = listaUsuarios,
+                    indicadores = indicadores,
+                    onCambiarConversion = viewModelIndicadores::cambiarMostrarConversion
                 )
             }
         }

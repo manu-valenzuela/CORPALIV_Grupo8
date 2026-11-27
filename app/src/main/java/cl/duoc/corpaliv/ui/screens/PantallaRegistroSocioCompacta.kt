@@ -26,6 +26,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import cl.duoc.corpaliv.ui.components.TextoEnDolares
+import cl.duoc.corpaliv.ui.components.InterruptorConversion
+import cl.duoc.corpaliv.viewmodel.EstadoIndicadores
 import cl.duoc.corpaliv.ui.components.AvisoExito
 import cl.duoc.corpaliv.data.model.OpcionDonacionMensual
 import cl.duoc.corpaliv.viewmodel.RegistroUsuarioUiState
@@ -46,7 +49,9 @@ fun PantallaRegistroSocioCompacta(
     onAlternarContrasena: () -> Unit,
     onObtenerUbicacion: () -> Unit,
     onPermisoUbicacionDenegado: () -> Unit,
-    onRegistrar: () -> Unit
+    onRegistrar: () -> Unit,
+    indicadores: EstadoIndicadores,
+    onCambiarConversion: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
@@ -152,6 +157,12 @@ fun PantallaRegistroSocioCompacta(
             style = MaterialTheme.typography.titleMedium
         )
 
+        InterruptorConversion(
+            texto = "Ver montos en dólares",
+            indicadores = indicadores,
+            onCambiar = onCambiarConversion
+        )
+
         val opcionesFijas = listOf(
             OpcionDonacionMensual.CincoMil,
             OpcionDonacionMensual.QuinceMil,
@@ -188,6 +199,10 @@ fun PantallaRegistroSocioCompacta(
                         Text(
                             text = opcion.impacto,
                             style = MaterialTheme.typography.bodySmall
+                        )
+                        TextoEnDolares(
+                            montoPesos = opcion.monto.toDouble(),
+                            indicadores = indicadores
                         )
                     }
                 }
@@ -228,6 +243,10 @@ fun PantallaRegistroSocioCompacta(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 8.dp)
+                    )
+                    TextoEnDolares(
+                        montoPesos = (personalizado?.montoLibre ?: 0).toDouble(),
+                        indicadores = indicadores
                     )
                 }
             }

@@ -11,12 +11,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import cl.duoc.corpaliv.ui.components.TextoEnDolaresYUf
+import cl.duoc.corpaliv.ui.components.InterruptorConversion
+import cl.duoc.corpaliv.viewmodel.EstadoIndicadores
 import cl.duoc.corpaliv.ui.components.TarjetaVenta
 import cl.duoc.corpaliv.data.model.Venta
 
 @Composable
 fun PantallaVentasCompacta(
     listaVentas: List<Venta>,
+    indicadores: EstadoIndicadores,
+    onCambiarConversion: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val recaudacionTotal = listaVentas.sumOf { it.precioTotal }
@@ -28,6 +33,12 @@ fun PantallaVentasCompacta(
     ) {
 
         Spacer(modifier = Modifier.height(12.dp))
+
+        InterruptorConversion(
+            texto = "Ver recaudación en dólares y UF",
+            indicadores = indicadores,
+            onCambiar = onCambiarConversion
+        )
 
         // Tarjeta resumen
         Card(
@@ -51,6 +62,7 @@ fun PantallaVentasCompacta(
                         text = "Recaudado: $ ${recaudacionTotal.toInt()}",
                         style = MaterialTheme.typography.titleSmall
                     )
+                    TextoEnDolaresYUf(montoPesos = recaudacionTotal, indicadores = indicadores)
                 }
                 Icon(
                     imageVector = Icons.Default.ReceiptLong,

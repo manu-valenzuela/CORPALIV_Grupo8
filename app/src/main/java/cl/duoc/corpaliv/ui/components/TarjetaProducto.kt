@@ -20,6 +20,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import cl.duoc.corpaliv.viewmodel.EstadoIndicadores
 import cl.duoc.corpaliv.data.model.Producto
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -31,6 +32,7 @@ fun TarjetaProducto(
     onSumar: () -> Unit,
     onRestar: () -> Unit,
     onConfirmarCompra: () -> Unit,
+    indicadores: EstadoIndicadores,
     modifier: Modifier = Modifier
 ) {
     val precioTotal = (producto.precio * cantidad).toInt()
@@ -71,6 +73,7 @@ fun TarjetaProducto(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+            TextoEnDolares(montoPesos = producto.precio, indicadores = indicadores)
 
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -145,6 +148,11 @@ fun TarjetaProducto(
                     )
                 }
             }
+            TextoEnDolares(
+                montoPesos = producto.precio * cantidad,
+                indicadores = indicadores,
+                modifier = Modifier.align(Alignment.End)
+            )
 
             Spacer(modifier = Modifier.height(12.dp))
 

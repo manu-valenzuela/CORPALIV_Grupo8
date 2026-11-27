@@ -1,6 +1,7 @@
 package cl.duoc.corpaliv.ui.screens
 
 import androidx.compose.runtime.Composable
+import cl.duoc.corpaliv.viewmodel.EstadoIndicadores
 import cl.duoc.corpaliv.data.model.OpcionDonacionMensual
 import cl.duoc.corpaliv.viewmodel.RegistroUsuarioUiState
 
@@ -19,7 +20,9 @@ fun PantallaRegistroSocio(
     onAlternarContrasena: () -> Unit,
     onObtenerUbicacion: () -> Unit,
     onPermisoUbicacionDenegado: () -> Unit,
-    onRegistrar: () -> Unit
+    onRegistrar: () -> Unit,
+    indicadores: EstadoIndicadores,
+    onCambiarConversion: (Boolean) -> Unit
 ) {
     PantallaRegistroSocioCompacta(
         estado = estado,
@@ -35,6 +38,8 @@ fun PantallaRegistroSocio(
         onAlternarContrasena = onAlternarContrasena,
         onObtenerUbicacion = onObtenerUbicacion,
         onPermisoUbicacionDenegado = onPermisoUbicacionDenegado,
-        onRegistrar = onRegistrar
+        onRegistrar = onRegistrar,
+        indicadores = indicadores,
+        onCambiarConversion = onCambiarConversion
     )
 }
