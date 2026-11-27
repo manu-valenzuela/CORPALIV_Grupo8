@@ -1,6 +1,7 @@
 package cl.duoc.corpaliv.data.model
+
 data class Usuario(
-    val id: String = "",
+    val id: Long,
     val nombre: String,
     val apellido: String,
     val rut: String,

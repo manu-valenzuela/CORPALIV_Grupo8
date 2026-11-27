@@ -42,7 +42,7 @@ fun TarjetaProducto(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         // Imagen del producto: aparece con un fundido al terminar de cargar
-        if (producto.urlImagen.isNotBlank()) {
+        if (!producto.urlImagen.isNullOrBlank()) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(producto.urlImagen)

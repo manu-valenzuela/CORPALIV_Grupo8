@@ -3,6 +3,8 @@ package cl.duoc.corpaliv.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -16,8 +18,8 @@ import cl.duoc.corpaliv.viewmodel.EstadoPantallaTienda
 @Composable
 fun PantallaTiendaCompacta(
     estado: EstadoPantallaTienda,
-    onSumarCantidad: (String) -> Unit,
-    onRestarCantidad: (String) -> Unit,
+    onSumarCantidad: (Long) -> Unit,
+    onRestarCantidad: (Long) -> Unit,
     indicadores: EstadoIndicadores,
     onCambiarConversion: (Boolean) -> Unit,
     onConfirmarCompra: (Producto) -> Unit,
@@ -34,6 +36,14 @@ fun PantallaTiendaCompacta(
             visible = estado.compraExitosa,
             mensaje = "¡Compra realizada con éxito!"
         )
+
+        estado.error?.let {
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
 
         InterruptorConversion(
             texto = "Ver precios en dólares",

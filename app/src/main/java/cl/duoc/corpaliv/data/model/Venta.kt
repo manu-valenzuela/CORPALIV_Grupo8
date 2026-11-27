@@ -1,8 +1,8 @@
 package cl.duoc.corpaliv.data.model
 
 data class Venta(
-    val id: String,
-    val productoId: String,
+    val id: Long,
+    val productoId: Long,
     val nombreProducto: String,
     val cantidad: Int,
     val precioUnitario: Double,

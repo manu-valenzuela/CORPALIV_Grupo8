@@ -17,5 +17,6 @@ data class RegistroUsuarioUiState(
     val cargandoUbicacion: Boolean = false,
     val errorUbicacion: String? = null,
     val registroExitoso: Boolean = false,
+    val errorEnvio: String? = null,
     val errores: RegistroUsuarioErrores = RegistroUsuarioErrores()
 )

@@ -46,6 +46,7 @@ fun AndamiajeAplicacion(
     claseAnchoVentana: WindowWidthSizeClass,
     rutaActual: String,
     esTrabajador: Boolean = false,
+    sesionIniciada: Boolean = false,
     alSeleccionarRuta: (String) -> Unit,
     contenido: @Composable () -> Unit
 ) {
@@ -56,9 +57,15 @@ fun AndamiajeAplicacion(
         return
     }
 
-    val elementosNavegacion = if (esTrabajador) elementosTrabajador else elementosSocio
+    // Un socio con sesión iniciada no necesita la opción "Registrarse"
+    val elementosNavegacion = when {
+        esTrabajador -> elementosTrabajador
+        sesionIniciada -> elementosSocio.filter { it.ruta != RutaAplicacion.RegistroSocio.ruta }
+        else -> elementosSocio
+    }
 
     val tituloPantalla = when (rutaActual) {
+        RutaAplicacion.Login.ruta -> "Iniciar Sesión"
         RutaAplicacion.PortalSocio.ruta -> "Portal CORPALIV"
         RutaAplicacion.Tienda.ruta -> if (esTrabajador) "Gestión de Ventas" else "Tienda CORPALIV"
         RutaAplicacion.RegistroSocio.ruta -> if (esTrabajador) "Crear Usuario" else "Registro de Socio"

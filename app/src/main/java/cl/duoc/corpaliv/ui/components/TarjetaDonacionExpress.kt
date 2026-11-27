@@ -17,7 +17,6 @@ import cl.duoc.corpaliv.viewmodel.DonacionUiState
 @Composable
 fun TarjetaDonacionExpress(
     formState: DonacionUiState,
-    mensajePersistido: String,
     onNombreChange: (String) -> Unit,
     onCorreoChange: (String) -> Unit,
     onMontoChange: (String) -> Unit,
@@ -53,14 +52,6 @@ fun TarjetaDonacionExpress(
                 text = "Haz tu Aporte a CORPALIV",
                 style = MaterialTheme.typography.titleMedium
             )
-
-            if (mensajePersistido.isNotBlank()) {
-                Text(
-                    text = mensajePersistido,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
 
             OutlinedTextField(
                 value = formState.nombre,
@@ -118,6 +109,14 @@ fun TarjetaDonacionExpress(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Registrar Donación")
+            }
+
+            formState.errorEnvio?.let {
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
 
             AvisoExito(

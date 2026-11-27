@@ -28,8 +28,8 @@ import cl.duoc.corpaliv.R
 
 @Composable
 fun PantallaSeleccionRolCompacta(
-    alSeleccionarSocioInvitado: () -> Unit,
-    alSeleccionarFuncionario: () -> Unit,
+    alIniciarSesion: () -> Unit,
+    alContinuarComoInvitado: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -70,13 +70,13 @@ fun PantallaSeleccionRolCompacta(
             )
 
             Button(
-                onClick = alSeleccionarSocioInvitado,
+                onClick = alIniciarSesion,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp)
             ) {
                 Text(
-                    text = "Acceder como Socio / Invitado",
+                    text = "Iniciar Sesión",
                     fontSize = 16.sp
                 )
             }
@@ -84,13 +84,13 @@ fun PantallaSeleccionRolCompacta(
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedButton(
-                onClick = alSeleccionarFuncionario,
+                onClick = alContinuarComoInvitado,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp)
             ) {
                 Text(
-                    text = "Acceder como Funcionario",
+                    text = "Continuar como Invitado",
                     fontSize = 16.sp
                 )
             }

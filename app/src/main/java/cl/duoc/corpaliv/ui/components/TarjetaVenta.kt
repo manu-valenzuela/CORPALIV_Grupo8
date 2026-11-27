@@ -7,6 +7,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import cl.duoc.corpaliv.ui.utils.formatoFecha
 import cl.duoc.corpaliv.data.model.Venta
 
 @Composable
@@ -48,7 +49,7 @@ fun TarjetaVenta(
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Text(
-                    text = venta.fecha,
+                    text = formatoFecha(venta.fecha),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

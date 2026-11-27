@@ -9,7 +9,10 @@ import cl.duoc.corpaliv.viewmodel.RegistroUsuarioErrores
 import cl.duoc.corpaliv.viewmodel.RegistroUsuarioUiState
 import cl.duoc.corpaliv.data.model.RolUsuario
 import cl.duoc.corpaliv.data.model.Usuario
-import cl.duoc.corpaliv.repository.UsuarioDataStore
+import cl.duoc.corpaliv.data.remote.dto.UsuarioDto
+import cl.duoc.corpaliv.data.remote.mensajeDeError
+import cl.duoc.corpaliv.repository.RepositorioAuth
+import cl.duoc.corpaliv.repository.RepositorioUsuarios
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,9 +20,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ViewModelUsuario(application: Application) : AndroidViewModel(application) {
+class ViewModelUsuario @JvmOverloads constructor(
+    application: Application,
+    private val repositorioUsuarios: RepositorioUsuarios = RepositorioUsuarios(),
+    private val repositorioAuth: RepositorioAuth = RepositorioAuth()
+) : AndroidViewModel(application) {
 
-    private val usuarioDataStore = UsuarioDataStore(application)
     private val manejadorUbicacion = ManejadorUbicacion(application)
 
     private val _formState = MutableStateFlow(RegistroUsuarioUiState())
@@ -28,14 +34,13 @@ class ViewModelUsuario(application: Application) : AndroidViewModel(application)
     private val _listaUsuarios = MutableStateFlow<List<Usuario>>(emptyList())
     val listaUsuarios: StateFlow<List<Usuario>> = _listaUsuarios.asStateFlow()
 
-    init {
-        observarUsuarios()
-    }
-
-    private fun observarUsuarios() {
+    // Panel del funcionario: perfiles (usuarios) con su rol (auth)
+    fun cargarUsuarios() {
         viewModelScope.launch {
-            usuarioDataStore.obtenerUsuarios().collect { usuarios ->
-                _listaUsuarios.value = usuarios
+            try {
+                _listaUsuarios.value = repositorioUsuarios.listar()
+            } catch (e: Exception) {
+                _listaUsuarios.value = emptyList()
             }
         }
     }
@@ -131,7 +136,7 @@ class ViewModelUsuario(application: Application) : AndroidViewModel(application)
             nombre = if (estado.nombre.isBlank()) "El nombre es obligatorio" else null,
             apellido = if (estado.apellido.isBlank()) "El apellido es obligatorio" else null,
             rut = if (!validarRutChileno(estado.rut)) "RUT inválido" else null,
-            fechaNacimiento = if (estado.fechaNacimiento.isBlank()) "Selecciona una fecha" else null,
+            fechaNacimiento = if (!REGEX_FECHA.matches(estado.fechaNacimiento.trim())) "Usa el formato DD/MM/AAAA" else null,
             direccion = if (estado.direccion.isBlank()) "La dirección es obligatoria" else null,
             donacionMensual = if (!montoValido) "El monto mínimo es $1.000" else null,
             correo = if (!REGEX_CORREO.matches(estado.correo.trim())) "Correo no válido" else null,
@@ -171,38 +176,62 @@ class ViewModelUsuario(application: Application) : AndroidViewModel(application)
 
     // --- Persistencia y lógica de negocio ---
 
+    // Crea la cuenta en auth y el perfil en usuarios.
+    // Quien se registra queda con su sesión iniciada; un funcionario que crea un usuario conserva la suya.
     fun registrarSocio(onExito: () -> Unit) {
-        if (validarFormulario()) {
-            viewModelScope.launch {
-                val estado = _formState.value
-                val nuevoUsuario = Usuario(
-                    id = "U-${System.currentTimeMillis()}", // ID simple sin UUID
-                    nombre = estado.nombre,
-                    apellido = estado.apellido,
-                    rut = estado.rut,
-                    fechaNacimiento = estado.fechaNacimiento,
-                    direccion = estado.direccion,
-                    latitud = estado.latitud,
-                    longitud = estado.longitud,
-                    donacionMensual = estado.donacionMensual,
-                    correo = estado.correo
+        if (!validarFormulario()) return
+
+        viewModelScope.launch {
+            val estado = _formState.value
+            try {
+                val esFuncionario = repositorioAuth.sesionActual.value?.rol == RolUsuario.Funcionario
+                val nuevaSesion = repositorioAuth.registrar(estado.correo.trim(), estado.contrasena)
+                if (!esFuncionario) repositorioAuth.guardarSesion(nuevaSesion)
+
+                repositorioUsuarios.crear(
+                    UsuarioDto(
+                        nombre = estado.nombre,
+                        apellido = estado.apellido,
+                        rut = estado.rut,
+                        fechaNacimiento = fechaParaServidor(estado.fechaNacimiento.trim()),
+                        direccion = estado.direccion,
+                        latitud = estado.latitud,
+                        longitud = estado.longitud,
+                        montoDonacionMensual = estado.donacionMensual.monto,
+                        correo = estado.correo.trim()
+                    )
                 )
-                usuarioDataStore.guardarUsuario(nuevoUsuario)
-                _formState.update { it.copy(registroExitoso = true) }
+
+                _formState.update { it.copy(registroExitoso = true, errorEnvio = null) }
                 delay(2000)
                 _formState.value = RegistroUsuarioUiState()
                 onExito()
+            } catch (e: Exception) {
+                _formState.update { it.copy(errorEnvio = mensajeDeError(e)) }
             }
         }
     }
 
-    fun cambiarRolUsuario(idUsuario: String, nuevoRol: RolUsuario) {
+    // El rol se cambia en auth; el usuario se identifica por su correo
+    fun cambiarRolUsuario(correo: String, nuevoRol: RolUsuario) {
         viewModelScope.launch {
-            usuarioDataStore.actualizarRolUsuario(idUsuario, nuevoRol)
+            try {
+                repositorioUsuarios.cambiarRol(correo, nuevoRol)
+                _listaUsuarios.value = repositorioUsuarios.listar()
+            } catch (e: Exception) {
+                // Si falla, la lista queda como estaba
+            }
         }
+    }
+
+    // "DD/MM/AAAA" (formulario) -> "AAAA-MM-DD" (microservicio)
+    private fun fechaParaServidor(fecha: String): String {
+        val (dia, mes, anio) = fecha.split("/")
+        return "$anio-$mes-$dia"
     }
 
     private companion object {
         val REGEX_CORREO = Regex("^[\\w.+-]+@[\\w-]+\\.[\\w.-]+$")
+        val REGEX_FECHA = Regex("^\\d{2}/\\d{2}/\\d{4}$")
     }
 }

@@ -13,7 +13,8 @@ fun PantallaGestionDonaciones(
     listaDonaciones: List<DonacionExpress>,
     listaUsuarios: List<Usuario>,
     indicadores: EstadoIndicadores,
-    onCambiarConversion: (Boolean) -> Unit
+    onCambiarConversion: (Boolean) -> Unit,
+    onEliminarDonacion: (Long) -> Unit
 ) {
     SeleccionarPantallaAdaptativa(
         claseAnchoVentana = claseAnchoVentana,
@@ -22,7 +23,8 @@ fun PantallaGestionDonaciones(
                 listaDonaciones = listaDonaciones,
                 listaUsuarios = listaUsuarios,
                 indicadores = indicadores,
-                onCambiarConversion = onCambiarConversion
+                onCambiarConversion = onCambiarConversion,
+                onEliminarDonacion = onEliminarDonacion
             )
         }
     )

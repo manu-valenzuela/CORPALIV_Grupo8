@@ -3,38 +3,56 @@ package cl.duoc.corpaliv.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cl.duoc.corpaliv.data.model.Producto
-import cl.duoc.corpaliv.data.model.Venta
+import cl.duoc.corpaliv.data.remote.mensajeDeError
 import cl.duoc.corpaliv.repository.RepositorioTienda
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ViewModelTienda : ViewModel() {
-
-    private val repositorioTienda = RepositorioTienda()
+class ViewModelTienda(
+    private val repositorioTienda: RepositorioTienda = RepositorioTienda()
+) : ViewModel() {
 
     private val _estado = MutableStateFlow(EstadoPantallaTienda())
     val estado: StateFlow<EstadoPantallaTienda> = _estado.asStateFlow()
 
     init {
-        cargarDatos()
+        cargarProductos()
     }
 
-    private fun cargarDatos() {
-        val productos = repositorioTienda.obtenerProductos()
-        _estado.update { it.copy(listaProductos = productos) }
+    fun cargarProductos() {
+        viewModelScope.launch {
+            try {
+                val productos = repositorioTienda.listarProductos()
+                _estado.update { it.copy(listaProductos = productos, error = null) }
+            } catch (e: Exception) {
+                _estado.update { it.copy(error = mensajeDeError(e)) }
+            }
+        }
     }
 
-    fun sumarCantidad(idProducto: String) {
+    // Panel del funcionario
+    fun cargarVentas() {
+        viewModelScope.launch {
+            try {
+                val ventas = repositorioTienda.listarVentas()
+                _estado.update { it.copy(listaVentas = ventas) }
+            } catch (e: Exception) {
+                _estado.update { it.copy(listaVentas = emptyList()) }
+            }
+        }
+    }
+
+    fun sumarCantidad(idProducto: Long) {
         _estado.update {
             it.copy(cantidades = it.cantidades + (idProducto to it.cantidadDe(idProducto) + 1))
         }
     }
 
-    fun restarCantidad(idProducto: String) {
+    fun restarCantidad(idProducto: Long) {
         _estado.update {
             val actual = it.cantidadDe(idProducto)
             if (actual > 1) it.copy(cantidades = it.cantidades + (idProducto to actual - 1)) else it
@@ -45,16 +63,20 @@ class ViewModelTienda : ViewModel() {
         val cantidad = _estado.value.cantidadDe(producto.id)
 
         viewModelScope.launch {
-            repositorioTienda.registrarVenta(producto, cantidad)
-            _estado.update {
-                it.copy(
-                    listaVentas = repositorioTienda.ventas.value,
-                    cantidades = it.cantidades - producto.id, // vuelve a 1
-                    compraExitosa = true
-                )
+            try {
+                repositorioTienda.registrarVenta(producto.id, cantidad)
+                _estado.update {
+                    it.copy(
+                        cantidades = it.cantidades - producto.id, // vuelve a 1
+                        compraExitosa = true,
+                        error = null
+                    )
+                }
+                delay(2000)
+                _estado.update { it.copy(compraExitosa = false) }
+            } catch (e: Exception) {
+                _estado.update { it.copy(error = mensajeDeError(e)) }
             }
-            delay(2000)
-            _estado.update { it.copy(compraExitosa = false) }
         }
     }
 }

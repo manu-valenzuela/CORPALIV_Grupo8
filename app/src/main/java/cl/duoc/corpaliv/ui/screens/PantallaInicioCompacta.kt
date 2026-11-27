@@ -25,7 +25,7 @@ fun PantallaInicioCompacta(
     cargando: Boolean,
     listaNoticias: List<Noticia>,
     formState: DonacionUiState,
-    mensajePersistido: String,
+    errorNoticias: String?,
     onNombreChange: (String) -> Unit,
     onCorreoChange: (String) -> Unit,
     onMontoChange: (String) -> Unit,
@@ -56,6 +56,14 @@ fun PantallaInicioCompacta(
                 style = MaterialTheme.typography.titleLarge
             )
 
+            errorNoticias?.let {
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+
             listaNoticias.forEach { noticia ->
                 TarjetaNoticia(noticia = noticia, alSeleccionarNoticia = {})
             }
@@ -66,7 +74,6 @@ fun PantallaInicioCompacta(
 
                 TarjetaDonacionExpress(
                     formState = formState,
-                    mensajePersistido = mensajePersistido,
                     onNombreChange = onNombreChange,
                     onCorreoChange = onCorreoChange,
                     onMontoChange = onMontoChange,

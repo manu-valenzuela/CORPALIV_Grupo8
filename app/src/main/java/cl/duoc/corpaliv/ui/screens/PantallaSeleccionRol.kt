@@ -7,15 +7,15 @@ import cl.duoc.corpaliv.ui.utils.SeleccionarPantallaAdaptativa
 @Composable
 fun PantallaSeleccionRol(
     claseAnchoVentana: WindowWidthSizeClass,
-    alSeleccionarSocioInvitado: () -> Unit,
-    alSeleccionarFuncionario: () -> Unit
+    alIniciarSesion: () -> Unit,
+    alContinuarComoInvitado: () -> Unit
 ) {
     SeleccionarPantallaAdaptativa(
         claseAnchoVentana = claseAnchoVentana,
         pantallaCompacta = {
             PantallaSeleccionRolCompacta(
-                alSeleccionarSocioInvitado = alSeleccionarSocioInvitado,
-                alSeleccionarFuncionario = alSeleccionarFuncionario
+                alIniciarSesion = alIniciarSesion,
+                alContinuarComoInvitado = alContinuarComoInvitado
             )
         }
     )

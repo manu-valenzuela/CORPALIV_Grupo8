@@ -1,9 +1,9 @@
 package cl.duoc.corpaliv.data.model
 
 data class Producto(
-    val id: String,
+    val id: Long,
     val nombre: String,
     val descripcion: String,
     val precio: Double,
-    val urlImagen: String
+    val urlImagen: String?
 )
