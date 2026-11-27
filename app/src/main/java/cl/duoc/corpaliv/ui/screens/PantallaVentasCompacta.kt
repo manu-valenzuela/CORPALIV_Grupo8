@@ -22,6 +22,7 @@ fun PantallaVentasCompacta(
     listaVentas: List<Venta>,
     indicadores: EstadoIndicadores,
     onCambiarConversion: (Boolean) -> Unit,
+    onAdministrarProductos: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val recaudacionTotal = listaVentas.sumOf { it.precioTotal }
@@ -31,6 +32,12 @@ fun PantallaVentasCompacta(
             .fillMaxSize()
             .padding(16.dp)
     ) {
+        OutlinedButton(
+            onClick = onAdministrarProductos,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Administrar productos")
+        }
 
         Spacer(modifier = Modifier.height(12.dp))
 

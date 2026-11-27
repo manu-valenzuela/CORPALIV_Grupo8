@@ -46,9 +46,12 @@ class ViewModelTienda(
         }
     }
 
+    // No permite elegir más unidades que el stock disponible
     fun sumarCantidad(idProducto: Long) {
         _estado.update {
-            it.copy(cantidades = it.cantidades + (idProducto to it.cantidadDe(idProducto) + 1))
+            val stock = it.listaProductos.find { p -> p.id == idProducto }?.stock ?: 0
+            val actual = it.cantidadDe(idProducto)
+            if (actual < stock) it.copy(cantidades = it.cantidades + (idProducto to actual + 1)) else it
         }
     }
 
@@ -65,8 +68,10 @@ class ViewModelTienda(
         viewModelScope.launch {
             try {
                 repositorioTienda.registrarVenta(producto.id, cantidad)
+                val productos = repositorioTienda.listarProductos()
                 _estado.update {
                     it.copy(
+                        listaProductos = productos,
                         cantidades = it.cantidades - producto.id, // vuelve a 1
                         compraExitosa = true,
                         error = null

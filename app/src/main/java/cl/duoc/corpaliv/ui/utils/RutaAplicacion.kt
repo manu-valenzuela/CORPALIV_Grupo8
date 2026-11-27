@@ -9,4 +9,6 @@ sealed class RutaAplicacion(val ruta: String) {
     data object RegistroSocio : RutaAplicacion("registro_socio")
     data object GestionUsuarios : RutaAplicacion("gestion_usuarios")
     data object GestionDonaciones : RutaAplicacion("gestion_donaciones")
+    data object GestionProductos : RutaAplicacion("gestion_productos")
+    data object GestionNoticias : RutaAplicacion("gestion_noticias")
 }

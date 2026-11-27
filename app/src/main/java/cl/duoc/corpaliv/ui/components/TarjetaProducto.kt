@@ -74,6 +74,11 @@ fun TarjetaProducto(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             TextoEnDolares(montoPesos = producto.precio, indicadores = indicadores)
+            Text(
+                text = if (producto.stock > 0) "Quedan ${producto.stock} unidades" else "Agotado",
+                style = MaterialTheme.typography.bodySmall,
+                color = if (producto.stock > 0) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.error
+            )
 
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -116,6 +121,7 @@ fun TarjetaProducto(
 
                     OutlinedIconButton(
                         onClick = onSumar,
+                        enabled = cantidad < producto.stock,
                         modifier = Modifier.size(36.dp)
                     ) {
                         Icon(Icons.Default.Add, contentDescription = "Sumar")
@@ -158,9 +164,10 @@ fun TarjetaProducto(
 
             Button(
                 onClick = onConfirmarCompra,
+                enabled = producto.stock > 0,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Confirmar Compra ($ $precioTotal)")
+                Text(if (producto.stock > 0) "Confirmar Compra ($ $precioTotal)" else "Agotado")
             }
         }
     }
