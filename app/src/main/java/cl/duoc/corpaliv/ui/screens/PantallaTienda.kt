@@ -11,8 +11,8 @@ import cl.duoc.corpaliv.viewmodel.EstadoPantallaTienda
 fun PantallaTienda(
     claseAnchoVentana: WindowWidthSizeClass,
     estado: EstadoPantallaTienda,
-    onSumarCantidad: (String) -> Unit,
-    onRestarCantidad: (String) -> Unit,
+    onSumarCantidad: (Long) -> Unit,
+    onRestarCantidad: (Long) -> Unit,
     onConfirmarCompra: (Producto) -> Unit,
     indicadores: EstadoIndicadores,
     onCambiarConversion: (Boolean) -> Unit

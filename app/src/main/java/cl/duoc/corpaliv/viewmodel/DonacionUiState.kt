@@ -6,6 +6,6 @@ data class DonacionUiState(
     val correo: String = "",
     val monto: String = "",
     val errores: DonacionErrores = DonacionErrores(),
-    val donacionExitosa: Boolean = false
+    val donacionExitosa: Boolean = false,
+    val errorEnvio: String? = null
 )
-

@@ -2,60 +2,17 @@ package cl.duoc.corpaliv.repository
 
 import cl.duoc.corpaliv.data.model.Producto
 import cl.duoc.corpaliv.data.model.Venta
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import cl.duoc.corpaliv.data.remote.RetrofitCorpaliv
+import cl.duoc.corpaliv.data.remote.VentasApiService
+import cl.duoc.corpaliv.data.remote.dto.VentaRequestDto
 
-class RepositorioTienda {
+class RepositorioTienda(
+    private val api: VentasApiService = RetrofitCorpaliv.ventas
+) {
+    suspend fun listarProductos(): List<Producto> = api.listarProductos()
 
-    private val _ventas = MutableStateFlow<List<Venta>>(emptyList())
-    val ventas: StateFlow<List<Venta>> = _ventas.asStateFlow()
+    suspend fun listarVentas(): List<Venta> = api.listarVentas()
 
-    fun obtenerProductos(): List<Producto> {
-        return listOf(
-            Producto(
-                id = "p1",
-                nombre = "Agenda Institucional 2026",
-                descripcion = "Agenda encuadernada con ilustraciones creadas por los estudiantes.",
-                precio = 12500.0,
-                urlImagen = "https://picsum.photos/seed/corpaliv-agenda/600/400"
-            ),
-            Producto(
-                id = "p2",
-                nombre = "Tazón Solidario CORPALIV",
-                descripcion = "Tazón cerámico de 350 ml con diseño exclusivo.",
-                precio = 6500.0,
-                urlImagen = "https://picsum.photos/seed/corpaliv-tazon/600/400"
-            ),
-            Producto(
-                id = "p3",
-                nombre = "Bolsa Ecológica de Tela",
-                descripcion = "Bolsa de algodón orgánico reutilizable.",
-                precio = 4500.0,
-                urlImagen = "https://picsum.photos/seed/corpaliv-bolsa/600/400"
-            )
-        )
-    }
-
-    fun registrarVenta(producto: Producto, cantidad: Int): Venta {
-        val fechaActual = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date())
-
-        // Genera un ID para venta con la hora actual
-        val idVenta = "V-${System.currentTimeMillis()}"
-
-        val nuevaVenta = Venta(
-            id = idVenta,
-            productoId = producto.id,
-            nombreProducto = producto.nombre,
-            cantidad = cantidad,
-            precioUnitario = producto.precio,
-            fecha = fechaActual
-        )
-
-        _ventas.value = listOf(nuevaVenta) + _ventas.value
-        return nuevaVenta
-    }
+    suspend fun registrarVenta(productoId: Long, cantidad: Int): Venta =
+        api.registrarVenta(VentaRequestDto(productoId, cantidad))
 }

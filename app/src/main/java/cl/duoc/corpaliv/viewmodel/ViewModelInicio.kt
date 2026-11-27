@@ -1,24 +1,21 @@
 package cl.duoc.corpaliv.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cl.duoc.corpaliv.data.model.DonacionExpress
-import cl.duoc.corpaliv.repository.DonacionDataStore
+import cl.duoc.corpaliv.data.remote.mensajeDeError
+import cl.duoc.corpaliv.repository.RepositorioDonaciones
 import cl.duoc.corpaliv.repository.RepositorioNoticias
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
-class ViewModelInicio(application: Application) : AndroidViewModel(application) {
-
-    private val donacionDataStore = DonacionDataStore(application)
-    private val repositorioNoticias = RepositorioNoticias()
+class ViewModelInicio(
+    private val repositorioNoticias: RepositorioNoticias = RepositorioNoticias(),
+    private val repositorioDonaciones: RepositorioDonaciones = RepositorioDonaciones()
+) : ViewModel() {
 
     private val _estado = MutableStateFlow(EstadoPantallaInicio())
     val estado: StateFlow<EstadoPantallaInicio> = _estado
@@ -31,34 +28,38 @@ class ViewModelInicio(application: Application) : AndroidViewModel(application) 
 
     init {
         cargarDatosInicio()
-        observarDonacionesDataStore()
     }
 
     fun cargarDatosInicio() {
         viewModelScope.launch {
-            _estado.update { it.copy(cargando = true) }
-            delay(1000)
-
-            val noticias = repositorioNoticias.obtenerNoticias()
-
-            _estado.update {
-                it.copy(
-                    cargando = false,
-                    listaNoticias = noticias
-                )
+            _estado.update { it.copy(cargando = true, errorNoticias = null) }
+            try {
+                val noticias = repositorioNoticias.obtenerNoticias()
+                _estado.update { it.copy(cargando = false, listaNoticias = noticias) }
+            } catch (e: Exception) {
+                _estado.update { it.copy(cargando = false, errorNoticias = mensajeDeError(e)) }
             }
         }
     }
 
-    private fun observarDonacionesDataStore() {
+    // Panel del funcionario
+    fun cargarDonaciones() {
         viewModelScope.launch {
-            donacionDataStore.obtenerUltimaDonacion().collect { registro ->
-                _estado.update { it.copy(mensajePersistido = registro) }
+            try {
+                _listaDonaciones.value = repositorioDonaciones.listar()
+            } catch (e: Exception) {
+                _listaDonaciones.value = emptyList()
             }
         }
+    }
+
+    fun eliminarDonacion(id: Long) {
         viewModelScope.launch {
-            donacionDataStore.obtenerDonaciones().collect { donaciones ->
-                _listaDonaciones.value = donaciones
+            try {
+                repositorioDonaciones.eliminar(id)
+                _listaDonaciones.value = repositorioDonaciones.listar()
+            } catch (e: Exception) {
+                // Si falla, la lista queda como estaba
             }
         }
     }
@@ -97,28 +98,19 @@ class ViewModelInicio(application: Application) : AndroidViewModel(application) 
         return !hayErrores
     }
 
-
-
     fun realizarDonacion(onExito: () -> Unit) {
-        if (validarFormulario()) {
-            viewModelScope.launch {
-                val fechaActual = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date())
-                val idDonacion = "D-${System.currentTimeMillis()}"
-                val montoDouble = _formState.value.monto.toDoubleOrNull() ?: 0.0
+        if (!validarFormulario()) return
 
-                val nuevaDonacion = DonacionExpress(
-                    id = idDonacion,
-                    nombre = _formState.value.nombre,
-                    correo = _formState.value.correo,
-                    monto = montoDouble,
-                    fecha = fechaActual
-                )
-
-                donacionDataStore.guardarDonacion(nuevaDonacion)
-                _formState.update { it.copy(donacionExitosa = true) }
+        viewModelScope.launch {
+            val form = _formState.value
+            try {
+                repositorioDonaciones.registrar(form.nombre, form.correo, form.monto.toDouble().toInt())
+                _formState.update { it.copy(donacionExitosa = true, errorEnvio = null) }
                 delay(2000)
                 _formState.update { it.copy(donacionExitosa = false) }
                 onExito()
+            } catch (e: Exception) {
+                _formState.update { it.copy(errorEnvio = mensajeDeError(e)) }
             }
         }
     }

@@ -24,6 +24,7 @@ fun PantallaGestionDonacionesCompacta(
     listaUsuarios: List<Usuario>,
     indicadores: EstadoIndicadores,
     onCambiarConversion: (Boolean) -> Unit,
+    onEliminarDonacion: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val totalExpress = listaDonaciones.sumOf { it.monto }
@@ -112,7 +113,10 @@ fun PantallaGestionDonacionesCompacta(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(listaDonaciones, key = { it.id }) { donacion ->
-                    TarjetaDonadorExpress(donacion = donacion)
+                    TarjetaDonadorExpress(
+                        donacion = donacion,
+                        onEliminar = { onEliminarDonacion(donacion.id) }
+                    )
                 }
             }
         }

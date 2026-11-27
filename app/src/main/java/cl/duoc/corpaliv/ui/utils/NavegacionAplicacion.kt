@@ -71,7 +71,7 @@ fun NavegacionAplicacion(
                     cargando = estadoInicio.cargando,
                     listaNoticias = estadoInicio.listaNoticias,
                     formState = formState,
-                    mensajePersistido = estadoInicio.mensajePersistido,
+                    errorNoticias = estadoInicio.errorNoticias,
                     onNombreChange = viewModelInicio::onNombreChange,
                     onCorreoChange = viewModelInicio::onCorreoChange,
                     onMontoChange = viewModelInicio::onMontoChange,
@@ -99,6 +99,8 @@ fun NavegacionAplicacion(
                 val estadoTienda by viewModelTienda.estado.collectAsState()
 
                 if (esTrabajador) {
+                    LaunchedEffect(Unit) { viewModelTienda.cargarVentas() }
+
                     PantallaVentas(
                         claseAnchoVentana = claseAnchoVentana,
                         listaVentas = estadoTienda.listaVentas,
@@ -162,6 +164,7 @@ fun NavegacionAplicacion(
             }
 
             composable(RutaAplicacion.GestionDonaciones.ruta) {
+                LaunchedEffect(Unit) { viewModelInicio.cargarDonaciones() }
                 val listaDonaciones by viewModelInicio.listaDonaciones.collectAsState()
                 val listaUsuarios by viewModelUsuario.listaUsuarios.collectAsState()
 
@@ -170,7 +173,8 @@ fun NavegacionAplicacion(
                     listaDonaciones = listaDonaciones,
                     listaUsuarios = listaUsuarios,
                     indicadores = indicadores,
-                    onCambiarConversion = viewModelIndicadores::cambiarMostrarConversion
+                    onCambiarConversion = viewModelIndicadores::cambiarMostrarConversion,
+                    onEliminarDonacion = viewModelInicio::eliminarDonacion
                 )
             }
         }

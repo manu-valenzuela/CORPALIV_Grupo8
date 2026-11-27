@@ -1,7 +1,7 @@
 package cl.duoc.corpaliv.data.model
 
 data class DonacionExpress(
-    val id: String,
+    val id: Long,
     val nombre: String,
     val correo: String,
     val monto: Double,
