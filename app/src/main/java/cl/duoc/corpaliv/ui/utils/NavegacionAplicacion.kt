@@ -20,7 +20,9 @@ fun NavegacionAplicacion(
     viewModelTienda: ViewModelTienda = viewModel(),
     viewModelUsuario: ViewModelUsuario = viewModel(),
     viewModelIndicadores: ViewModelIndicadores = viewModel(),
-    viewModelSesion: ViewModelSesion = viewModel()
+    viewModelSesion: ViewModelSesion = viewModel(),
+    viewModelGestionProductos: ViewModelGestionProductos = viewModel(),
+    viewModelGestionNoticias: ViewModelGestionNoticias = viewModel()
 ) {
     val entradaNavegacionActual by controladorNavegacion.currentBackStackEntryAsState()
     val rutaActual = entradaNavegacionActual?.destination?.route ?: RutaAplicacion.SeleccionRol.ruta
@@ -91,6 +93,7 @@ fun NavegacionAplicacion(
             }
 
             composable(RutaAplicacion.PortalSocio.ruta) {
+                LaunchedEffect(Unit) { viewModelInicio.cargarDatosInicio() }
                 val estadoInicio by viewModelInicio.estado.collectAsState()
                 val formState by viewModelInicio.formState.collectAsState()
 
@@ -133,9 +136,15 @@ fun NavegacionAplicacion(
                         claseAnchoVentana = claseAnchoVentana,
                         listaVentas = estadoTienda.listaVentas,
                         indicadores = indicadores,
-                        onCambiarConversion = viewModelIndicadores::cambiarMostrarConversion
+                        onCambiarConversion = viewModelIndicadores::cambiarMostrarConversion,
+                        onAdministrarProductos = {
+                            controladorNavegacion.navigate(RutaAplicacion.GestionProductos.ruta)
+                        }
                     )
                 } else {
+                    // La tienda recarga los productos al entrar (stock actualizado)
+                    LaunchedEffect(Unit) { viewModelTienda.cargarProductos() }
+
                     PantallaTienda(
                         claseAnchoVentana = claseAnchoVentana,
                         estado = estadoTienda,
@@ -214,6 +223,41 @@ fun NavegacionAplicacion(
                     indicadores = indicadores,
                     onCambiarConversion = viewModelIndicadores::cambiarMostrarConversion,
                     onEliminarDonacion = viewModelInicio::eliminarDonacion
+                )
+            }
+            composable(RutaAplicacion.GestionProductos.ruta) {
+                LaunchedEffect(Unit) { viewModelGestionProductos.cargar() }
+                val estadoProductos by viewModelGestionProductos.estado.collectAsState()
+
+                PantallaGestionProductos(
+                    claseAnchoVentana = claseAnchoVentana,
+                    estado = estadoProductos,
+                    onNombreChange = viewModelGestionProductos::onNombreChange,
+                    onDescripcionChange = viewModelGestionProductos::onDescripcionChange,
+                    onPrecioChange = viewModelGestionProductos::onPrecioChange,
+                    onStockChange = viewModelGestionProductos::onStockChange,
+                    onUrlImagenChange = viewModelGestionProductos::onUrlImagenChange,
+                    onGuardar = viewModelGestionProductos::guardar,
+                    onCancelarEdicion = viewModelGestionProductos::cancelarEdicion,
+                    onEditar = viewModelGestionProductos::editar,
+                    onEliminar = viewModelGestionProductos::eliminar
+                )
+            }
+
+            composable(RutaAplicacion.GestionNoticias.ruta) {
+                LaunchedEffect(Unit) { viewModelGestionNoticias.cargar() }
+                val estadoNoticias by viewModelGestionNoticias.estado.collectAsState()
+
+                PantallaGestionNoticias(
+                    claseAnchoVentana = claseAnchoVentana,
+                    estado = estadoNoticias,
+                    onTituloChange = viewModelGestionNoticias::onTituloChange,
+                    onResumenChange = viewModelGestionNoticias::onResumenChange,
+                    onUrlImagenChange = viewModelGestionNoticias::onUrlImagenChange,
+                    onGuardar = viewModelGestionNoticias::guardar,
+                    onCancelarEdicion = viewModelGestionNoticias::cancelarEdicion,
+                    onEditar = viewModelGestionNoticias::editar,
+                    onEliminar = viewModelGestionNoticias::eliminar
                 )
             }
         }

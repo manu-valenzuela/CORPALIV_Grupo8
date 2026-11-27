@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Newspaper
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.VolunteerActivism
@@ -37,7 +38,8 @@ val elementosTrabajador = listOf(
     ElementoNavegacion("Inicio", RutaAplicacion.SeleccionRol.ruta, Icons.Default.Home),
     ElementoNavegacion("Usuarios", RutaAplicacion.GestionUsuarios.ruta, Icons.Default.AccountCircle),
     ElementoNavegacion("Donaciones", RutaAplicacion.GestionDonaciones.ruta, Icons.Default.VolunteerActivism),
-    ElementoNavegacion("Ventas", RutaAplicacion.Tienda.ruta, Icons.Default.ShoppingBag)
+    ElementoNavegacion("Tienda", RutaAplicacion.Tienda.ruta, Icons.Default.ShoppingBag),
+    ElementoNavegacion("Noticias", RutaAplicacion.GestionNoticias.ruta, Icons.Default.Newspaper)
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -72,6 +74,8 @@ fun AndamiajeAplicacion(
         RutaAplicacion.GestionUsuarios.ruta -> "Gestión de Usuarios"
         RutaAplicacion.GestionDonaciones.ruta -> "Gestión de Donaciones"
         RutaAplicacion.ResumenDonacion.ruta -> "Resumen de Aporte"
+        RutaAplicacion.GestionProductos.ruta -> "Gestión de Productos"
+        RutaAplicacion.GestionNoticias.ruta -> "Gestión de Noticias"
         else -> "CORPALIV"
     }
 

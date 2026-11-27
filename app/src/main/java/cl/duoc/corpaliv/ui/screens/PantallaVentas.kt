@@ -11,7 +11,8 @@ fun PantallaVentas(
     claseAnchoVentana: WindowWidthSizeClass,
     listaVentas: List<Venta>,
     indicadores: EstadoIndicadores,
-    onCambiarConversion: (Boolean) -> Unit
+    onCambiarConversion: (Boolean) -> Unit,
+    onAdministrarProductos: () -> Unit
 ) {
     SeleccionarPantallaAdaptativa(
         claseAnchoVentana = claseAnchoVentana,
@@ -19,7 +20,8 @@ fun PantallaVentas(
             PantallaVentasCompacta(
                 listaVentas = listaVentas,
                 indicadores = indicadores,
-                onCambiarConversion = onCambiarConversion
+                onCambiarConversion = onCambiarConversion,
+                onAdministrarProductos = onAdministrarProductos
             )
         }
     )
