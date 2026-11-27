@@ -23,10 +23,9 @@ import kotlinx.coroutines.launch
 class ViewModelUsuario @JvmOverloads constructor(
     application: Application,
     private val repositorioUsuarios: RepositorioUsuarios = RepositorioUsuarios(),
-    private val repositorioAuth: RepositorioAuth = RepositorioAuth()
+    private val repositorioAuth: RepositorioAuth = RepositorioAuth(),
+    private val manejadorUbicacion: ManejadorUbicacion = ManejadorUbicacion(application)
 ) : AndroidViewModel(application) {
-
-    private val manejadorUbicacion = ManejadorUbicacion(application)
 
     private val _formState = MutableStateFlow(RegistroUsuarioUiState())
     val formState: StateFlow<RegistroUsuarioUiState> = _formState.asStateFlow()

@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kover)
 }
 
 android {
@@ -34,6 +35,10 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+    // Kotest se ejecuta sobre JUnit 5
+    testOptions {
+        unitTests.all { it.useJUnitPlatform() }
     }
 }
 
@@ -70,11 +75,51 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
 
     // Tests y Debug
-    testImplementation(libs.junit)
+    // Pruebas unitarias de lógica: Kotest + MockK + corrutinas
+    testImplementation(libs.kotest.runner.junit5)
+    testImplementation(libs.kotest.assertions.core)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+
+    // Pruebas de UI: JUnit 4 + ComposeTestRule (se ejecutan en el emulador)
+    androidTestImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
+}
+// Cobertura de la lógica (ViewModels, repositorios, modelos y utilidades).
+// Se excluye lo visual (probado con ComposeTestRule) y lo que depende del hardware o de la red real.
+kover {
+    reports {
+        filters {
+            excludes {
+                packages(
+                    "cl.duoc.corpaliv.ui.screens",
+                    "cl.duoc.corpaliv.ui.components",
+                    "cl.duoc.corpaliv.ui.theme",
+                    "cl.duoc.corpaliv.data.remote.dto"
+                )
+                classes(
+                    "cl.duoc.corpaliv.MainActivity*",
+                    "cl.duoc.corpaliv.ui.utils.NavegacionAplicacionKt*",
+                    "cl.duoc.corpaliv.ui.utils.ManejadorPantallaAdaptativaKt*",
+                    "cl.duoc.corpaliv.ui.utils.RutaAplicacion*",
+                    "cl.duoc.corpaliv.ui.utils.ElementoNavegacion*",
+                    "cl.duoc.corpaliv.data.ManejadorUbicacion*",
+                    "cl.duoc.corpaliv.data.remote.RetrofitCorpaliv*",
+                    "cl.duoc.corpaliv.data.remote.RetrofitIndicadores*",
+                    "*ComposableSingletons*",
+                    "*.BuildConfig"
+                )
+            }
+        }
+        verify {
+            rule {
+                minBound(80)
+            }
+        }
+    }
 }
