@@ -108,12 +108,28 @@ fun NavegacionAplicacion(
             }
 
             composable(RutaAplicacion.RegistroSocio.ruta) {
+                val estadoRegistro by viewModelUsuario.formState.collectAsState()
+
                 PantallaRegistroSocio(
-                    viewModelUsuario = viewModelUsuario,
-                    onRegistroExitoso = {
-                        val destino = if (esTrabajador) RutaAplicacion.GestionUsuarios.ruta else RutaAplicacion.PortalSocio.ruta
-                        controladorNavegacion.navigate(destino) {
-                            popUpTo(destino) { inclusive = true }
+                    estado = estadoRegistro,
+                    onNombreChange = viewModelUsuario::onNombreChange,
+                    onApellidoChange = viewModelUsuario::onApellidoChange,
+                    onRutChange = viewModelUsuario::onRutChange,
+                    onFechaNacimientoChange = viewModelUsuario::onFechaNacimientoChange,
+                    onDireccionChange = { viewModelUsuario.onDireccionChange(it) },
+                    onDonacionChange = viewModelUsuario::onDonacionChange,
+                    onMontoPersonalizadoChange = viewModelUsuario::onMontoPersonalizadoChange,
+                    onCorreoChange = viewModelUsuario::onCorreoChange,
+                    onContrasenaChange = viewModelUsuario::onContrasenaChange,
+                    onAlternarContrasena = viewModelUsuario::onAlternarContrasena,
+                    onObtenerUbicacion = viewModelUsuario::obtenerUbicacion,
+                    onPermisoUbicacionDenegado = viewModelUsuario::onPermisoUbicacionDenegado,
+                    onRegistrar = {
+                        viewModelUsuario.registrarSocio {
+                            val destino = if (esTrabajador) RutaAplicacion.GestionUsuarios.ruta else RutaAplicacion.PortalSocio.ruta
+                            controladorNavegacion.navigate(destino) {
+                                popUpTo(destino) { inclusive = true }
+                            }
                         }
                     }
                 )

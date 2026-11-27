@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Patterns
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import cl.duoc.corpaliv.data.ManejadorUbicacion
 import cl.duoc.corpaliv.data.model.OpcionDonacionMensual
 import cl.duoc.corpaliv.viewmodel.RegistroUsuarioErrores
 import cl.duoc.corpaliv.viewmodel.RegistroUsuarioUiState
@@ -20,6 +21,7 @@ import kotlinx.coroutines.launch
 class ViewModelUsuario(application: Application) : AndroidViewModel(application) {
 
     private val usuarioDataStore = UsuarioDataStore(application)
+    private val manejadorUbicacion = ManejadorUbicacion(application)
 
     private val _formState = MutableStateFlow(RegistroUsuarioUiState())
     val formState: StateFlow<RegistroUsuarioUiState> = _formState.asStateFlow()
@@ -63,6 +65,7 @@ class ViewModelUsuario(application: Application) : AndroidViewModel(application)
                 direccion = direccion,
                 latitud = lat,
                 longitud = lng,
+                errorUbicacion = null,
                 errores = it.errores.copy(direccion = null)
             )
         }
@@ -70,6 +73,11 @@ class ViewModelUsuario(application: Application) : AndroidViewModel(application)
 
     fun onDonacionChange(donacion: OpcionDonacionMensual) {
         _formState.update { it.copy(donacionMensual = donacion, errores = it.errores.copy(donacionMensual = null)) }
+    }
+
+    fun onMontoPersonalizadoChange(texto: String) {
+        val monto = texto.filter { it.isDigit() }.toIntOrNull() ?: 0
+        onDonacionChange(OpcionDonacionMensual.Personalizado(monto))
     }
 
     fun onCorreoChange(valor: String) {
@@ -80,8 +88,34 @@ class ViewModelUsuario(application: Application) : AndroidViewModel(application)
         _formState.update { it.copy(contrasena = valor, errores = it.errores.copy(contrasena = null)) }
     }
 
-    fun setCargandoUbicacion(cargando: Boolean) {
-        _formState.update { it.copy(cargandoUbicacion = cargando) }
+    fun onAlternarContrasena() {
+        _formState.update { it.copy(contrasenaVisible = !it.contrasenaVisible) }
+    }
+
+    // --- Ubicación (GPS) ---
+
+    fun obtenerUbicacion() {
+        _formState.update { it.copy(cargandoUbicacion = true, errorUbicacion = null) }
+        manejadorUbicacion.obtenerUbicacionActual(
+            onResultado = { direccion, lat, lng ->
+                _formState.update {
+                    it.copy(
+                        direccion = direccion,
+                        latitud = lat,
+                        longitud = lng,
+                        cargandoUbicacion = false,
+                        errores = it.errores.copy(direccion = null)
+                    )
+                }
+            },
+            onError = { mensaje ->
+                _formState.update { it.copy(cargandoUbicacion = false, errorUbicacion = mensaje) }
+            }
+        )
+    }
+
+    fun onPermisoUbicacionDenegado() {
+        _formState.update { it.copy(errorUbicacion = "Permiso de ubicación denegado") }
     }
 
     // --- Validación de datos ---

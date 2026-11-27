@@ -13,7 +13,9 @@ data class RegistroUsuarioUiState(
     val donacionMensual: OpcionDonacionMensual = OpcionDonacionMensual.CincoMil,
     val correo: String = "",
     val contrasena: String = "",
+    val contrasenaVisible: Boolean = false,
     val cargandoUbicacion: Boolean = false,
+    val errorUbicacion: String? = null,
     val registroExitoso: Boolean = false,
     val errores: RegistroUsuarioErrores = RegistroUsuarioErrores()
 )
