@@ -3,7 +3,6 @@ package cl.duoc.corpaliv.ui.screens
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import cl.duoc.corpaliv.viewmodel.DonacionUiState
-import cl.duoc.corpaliv.data.model.Evento
 import cl.duoc.corpaliv.data.model.Noticia
 import cl.duoc.corpaliv.ui.utils.SeleccionarPantallaAdaptativa
 
@@ -12,7 +11,6 @@ fun PantallaInicio(
     claseAnchoVentana: WindowWidthSizeClass,
     cargando: Boolean,
     listaNoticias: List<Noticia>,
-    proximoEvento: Evento?,
     formState: DonacionUiState,
     mostrarMensajeAnimado: Boolean,
     mensajePersistido: String,
@@ -27,7 +25,6 @@ fun PantallaInicio(
             PantallaInicioCompacta(
                 cargando = cargando,
                 listaNoticias = listaNoticias,
-                proximoEvento = proximoEvento,
                 formState = formState,
                 mostrarMensajeAnimado = mostrarMensajeAnimado,
                 mensajePersistido = mensajePersistido,

@@ -6,6 +6,8 @@ data class Venta(
     val nombreProducto: String,
     val cantidad: Int,
     val precioUnitario: Double,
-    val precioTotal: Double,
     val fecha: String
-)
+) {
+    val precioTotal: Double
+        get() = precioUnitario * cantidad
+}

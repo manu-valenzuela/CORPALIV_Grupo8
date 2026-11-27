@@ -5,6 +5,5 @@ data class Producto(
     val nombre: String,
     val descripcion: String,
     val precio: Double,
-    val urlImagen: String,
-    val enStock: Boolean = true
+    val urlImagen: String
 )

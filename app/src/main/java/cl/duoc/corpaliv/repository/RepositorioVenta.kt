@@ -42,7 +42,6 @@ class RepositorioTienda {
 
     fun registrarVenta(producto: Producto, cantidad: Int): Venta {
         val fechaActual = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date())
-        val precioTotal = producto.precio * cantidad
 
         // Genera un ID para venta con la hora actual
         val idVenta = "V-${System.currentTimeMillis()}"
@@ -53,7 +52,6 @@ class RepositorioTienda {
             nombreProducto = producto.nombre,
             cantidad = cantidad,
             precioUnitario = producto.precio,
-            precioTotal = precioTotal,
             fecha = fechaActual
         )
 

@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import cl.duoc.corpaliv.data.model.DonacionExpress
-import cl.duoc.corpaliv.data.model.Evento
 import cl.duoc.corpaliv.data.model.Noticia
 import cl.duoc.corpaliv.repository.DonacionDataStore
 import kotlinx.coroutines.delay
@@ -46,14 +45,10 @@ class ViewModelInicio(application: Application) : AndroidViewModel(application) 
                 Noticia("1", "Proyecto Impulso Laboral Alba Lab", "Formación laboral y acompañamiento para personas con discapacidad múltiple.", "", "2026-10-15"),
                 Noticia("2", "Escuela Jan Van Dijk amplía matrícula", "Acreditación ministerial permite aumentar la cobertura educativa.", "", "2026-10-10")
             )
-
-            val evento = Evento("101", "Encuentro Anual de Benefactores y RSE", "2026-11-20", "Sede Central CORPALIV", "Jornada de integración con empresas y familias.")
-
             _estado.update {
                 it.copy(
                     cargando = false,
-                    listaNoticias = noticias,
-                    proximoEvento = evento
+                    listaNoticias = noticias
                 )
             }
         }

@@ -27,8 +27,8 @@ fun TarjetaUsuarioGestion(
 ) {
     val rolesDisponibles = listOf(
         RolUsuario.Socio,
-        RolUsuario.Voluntario(),
-        RolUsuario.Funcionario()
+        RolUsuario.Voluntario,
+        RolUsuario.Funcionario
     )
 
     Card(
@@ -78,7 +78,7 @@ fun TarjetaUsuarioGestion(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 rolesDisponibles.forEach { rol ->
-                    val esSeleccionado = usuario.rol::class == rol::class
+                    val esSeleccionado = usuario.rol == rol
                     FilterChip(
                         selected = esSeleccionado,
                         onClick = { onCambiarRol(rol) },

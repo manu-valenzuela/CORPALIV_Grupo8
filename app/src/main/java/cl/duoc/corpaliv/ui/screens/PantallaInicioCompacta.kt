@@ -15,14 +15,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cl.duoc.corpaliv.viewmodel.DonacionUiState
-import cl.duoc.corpaliv.data.model.Evento
 import cl.duoc.corpaliv.data.model.Noticia
 
 @Composable
 fun PantallaInicioCompacta(
     cargando: Boolean,
     listaNoticias: List<Noticia>,
-    proximoEvento: Evento?,
     formState: DonacionUiState,
     mostrarMensajeAnimado: Boolean,
     mensajePersistido: String,
@@ -49,15 +47,6 @@ fun PantallaInicioCompacta(
         )
 
         {
-            Text(
-                text = "Eventos",
-                style = MaterialTheme.typography.titleLarge
-            )
-
-            proximoEvento?.let { evento ->
-                TarjetaEvento(evento = evento, alVerDetallesEvento = {})
-            }
-
             Text(
                 text = "Últimas Noticias",
                 style = MaterialTheme.typography.titleLarge

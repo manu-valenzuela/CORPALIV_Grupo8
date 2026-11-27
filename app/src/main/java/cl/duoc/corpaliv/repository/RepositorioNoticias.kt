@@ -1,6 +1,5 @@
 package cl.duoc.corpaliv.repository
 
-import cl.duoc.corpaliv.data.model.Evento
 import cl.duoc.corpaliv.data.model.Noticia
 
 class RepositorioNoticias {
@@ -22,16 +21,6 @@ class RepositorioNoticias {
                 urlImagen = "https://ejemplo.com/imagen2.jpg",
                 fecha = "2026-10-10"
             )
-        )
-    }
-
-    suspend fun obtenerProximoEvento(): Evento {
-        return Evento(
-            id = "101",
-            titulo = "Gala Benefactores CORPALIV",
-            fecha = "2026-11-20",
-            ubicacion = "Sede Central CORPALIV",
-            descripcion = "Encuentro anual con colaboradores estratégicos y familias."
         )
     }
 }

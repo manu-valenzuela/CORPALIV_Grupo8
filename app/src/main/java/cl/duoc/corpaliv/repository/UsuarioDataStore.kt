@@ -103,8 +103,8 @@ class UsuarioDataStore(private val context: Context) {
 
     private fun parseRol(str: String?): RolUsuario {
         return when (str) {
-            "VOLUNTARIO" -> RolUsuario.Voluntario()
-            "FUNCIONARIO" -> RolUsuario.Funcionario()
+            "VOLUNTARIO" -> RolUsuario.Voluntario
+            "FUNCIONARIO" -> RolUsuario.Funcionario
             else -> RolUsuario.Socio
         }
     }

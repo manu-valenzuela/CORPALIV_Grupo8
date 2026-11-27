@@ -68,7 +68,6 @@ fun NavegacionAplicacion(
                     claseAnchoVentana = claseAnchoVentana,
                     cargando = estadoInicio.cargando,
                     listaNoticias = estadoInicio.listaNoticias,
-                    proximoEvento = estadoInicio.proximoEvento,
                     formState = formState,
                     mostrarMensajeAnimado = mostrarMensaje,
                     mensajePersistido = estadoInicio.mensajePersistido,

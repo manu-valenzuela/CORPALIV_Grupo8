@@ -1,7 +1,6 @@
 package cl.duoc.corpaliv.viewmodel
 
 import cl.duoc.corpaliv.data.model.OpcionDonacionMensual
-import cl.duoc.corpaliv.data.model.RolUsuario
 
 data class RegistroUsuarioUiState(
     val nombre: String = "",
@@ -14,7 +13,6 @@ data class RegistroUsuarioUiState(
     val donacionMensual: OpcionDonacionMensual = OpcionDonacionMensual.CincoMil,
     val correo: String = "",
     val contrasena: String = "",
-    val rol: RolUsuario = RolUsuario.Socio,
     val cargandoUbicacion: Boolean = false,
     val errores: RegistroUsuarioErrores = RegistroUsuarioErrores()
 )

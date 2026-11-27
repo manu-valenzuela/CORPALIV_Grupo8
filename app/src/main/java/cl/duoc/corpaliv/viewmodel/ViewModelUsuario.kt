@@ -79,10 +79,6 @@ class ViewModelUsuario(application: Application) : AndroidViewModel(application)
         _formState.update { it.copy(contrasena = valor, errores = it.errores.copy(contrasena = null)) }
     }
 
-    fun onRolChange(nuevoRol: RolUsuario) {
-        _formState.update { it.copy(rol = nuevoRol) }
-    }
-
     fun setCargandoUbicacion(cargando: Boolean) {
         _formState.update { it.copy(cargandoUbicacion = cargando) }
     }
@@ -155,8 +151,7 @@ class ViewModelUsuario(application: Application) : AndroidViewModel(application)
                     latitud = estado.latitud,
                     longitud = estado.longitud,
                     donacionMensual = estado.donacionMensual,
-                    correo = estado.correo,
-                    rol = estado.rol
+                    correo = estado.correo
                 )
                 usuarioDataStore.guardarUsuario(nuevoUsuario)
                 _formState.value = RegistroUsuarioUiState()

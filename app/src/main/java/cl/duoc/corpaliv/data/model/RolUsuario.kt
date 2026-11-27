@@ -7,15 +7,11 @@ sealed interface RolUsuario {
         override val etiqueta: String = "Socio"
     }
 
-    data class Voluntario(
-        val areaAsignada: String = "General"
-    ) : RolUsuario {
+    data object Voluntario : RolUsuario {
         override val etiqueta: String = "Voluntario"
     }
 
-    data class Funcionario(
-        val cargo: String = "Personal Administrativo"
-    ) : RolUsuario {
+    data object Funcionario : RolUsuario {
         override val etiqueta: String = "Funcionario"
     }
 }
