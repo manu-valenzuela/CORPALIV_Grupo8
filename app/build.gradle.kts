@@ -58,6 +58,9 @@ dependencies {
 
     implementation("androidx.datastore:datastore-preferences:1.1.0")
 
+    // Carga de imágenes desde URL
+    implementation(libs.coil.compose)
+
     // AndroidX Core y Lifecycle
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

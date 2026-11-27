@@ -16,9 +16,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cl.duoc.corpaliv.data.model.Producto
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 
 @Composable
 fun TarjetaProducto(
@@ -35,6 +39,21 @@ fun TarjetaProducto(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
+        // Imagen del producto: aparece con un fundido al terminar de cargar
+        if (producto.urlImagen.isNotBlank()) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(producto.urlImagen)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = producto.nombre,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(160.dp)
+            )
+        }
+
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = producto.nombre,

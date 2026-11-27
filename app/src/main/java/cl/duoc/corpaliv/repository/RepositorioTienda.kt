@@ -21,21 +21,21 @@ class RepositorioTienda {
                 nombre = "Agenda Institucional 2026",
                 descripcion = "Agenda encuadernada con ilustraciones creadas por los estudiantes.",
                 precio = 12500.0,
-                urlImagen = ""
+                urlImagen = "https://picsum.photos/seed/corpaliv-agenda/600/400"
             ),
             Producto(
                 id = "p2",
                 nombre = "Tazón Solidario CORPALIV",
                 descripcion = "Tazón cerámico de 350 ml con diseño exclusivo.",
                 precio = 6500.0,
-                urlImagen = ""
+                urlImagen = "https://picsum.photos/seed/corpaliv-tazon/600/400"
             ),
             Producto(
                 id = "p3",
                 nombre = "Bolsa Ecológica de Tela",
                 descripcion = "Bolsa de algodón orgánico reutilizable.",
                 precio = 4500.0,
-                urlImagen = ""
+                urlImagen = "https://picsum.photos/seed/corpaliv-bolsa/600/400"
             )
         )
     }
