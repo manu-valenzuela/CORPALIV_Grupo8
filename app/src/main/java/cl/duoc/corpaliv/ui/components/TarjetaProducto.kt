@@ -1,4 +1,4 @@
-package cl.duoc.corpaliv.ui.screens
+package cl.duoc.corpaliv.ui.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons

@@ -1,4 +1,4 @@
-package cl.duoc.corpaliv.ui.screens
+package cl.duoc.corpaliv.ui.components
 
 import android.content.Intent
 import android.net.Uri

@@ -1,4 +1,4 @@
-package cl.duoc.corpaliv.ui.screens
+package cl.duoc.corpaliv.ui.utils
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

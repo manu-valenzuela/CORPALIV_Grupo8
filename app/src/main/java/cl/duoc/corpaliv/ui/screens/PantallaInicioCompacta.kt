@@ -14,6 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cl.duoc.corpaliv.ui.components.TarjetaDonacionExpress
+import cl.duoc.corpaliv.ui.components.TarjetaNoticia
 import cl.duoc.corpaliv.viewmodel.DonacionUiState
 import cl.duoc.corpaliv.data.model.Noticia
 

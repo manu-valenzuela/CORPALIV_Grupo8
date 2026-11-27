@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import cl.duoc.corpaliv.ui.components.AndamiajeAplicacion
 import cl.duoc.corpaliv.ui.screens.*
 import cl.duoc.corpaliv.viewmodel.*
 

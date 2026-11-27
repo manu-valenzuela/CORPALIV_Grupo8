@@ -1,4 +1,4 @@
-package cl.duoc.corpaliv.ui.screens
+package cl.duoc.corpaliv.ui.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +23,7 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import cl.duoc.corpaliv.ui.utils.ElementoNavegacion
 import cl.duoc.corpaliv.ui.utils.RutaAplicacion
 
 val elementosSocio = listOf(
