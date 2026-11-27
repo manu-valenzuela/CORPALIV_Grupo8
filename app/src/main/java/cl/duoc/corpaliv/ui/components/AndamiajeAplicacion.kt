@@ -64,7 +64,7 @@ fun AndamiajeAplicacion(
         RutaAplicacion.RegistroSocio.ruta -> if (esTrabajador) "Crear Usuario" else "Registro de Socio"
         RutaAplicacion.GestionUsuarios.ruta -> "Gestión de Usuarios"
         RutaAplicacion.GestionDonaciones.ruta -> "Gestión de Donaciones"
-        "resumen" -> "Resumen de Aporte"
+        RutaAplicacion.ResumenDonacion.ruta -> "Resumen de Aporte"
         else -> "CORPALIV"
     }
 

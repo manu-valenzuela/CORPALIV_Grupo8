@@ -75,13 +75,13 @@ fun NavegacionAplicacion(
                     onMontoChange = viewModelInicio::onMontoChange,
                     onConfirmarDonacion = {
                         viewModelInicio.realizarDonacion {
-                            controladorNavegacion.navigate("resumen")
+                            controladorNavegacion.navigate(RutaAplicacion.ResumenDonacion.ruta)
                         }
                     }
                 )
             }
 
-            composable("resumen") {
+            composable(RutaAplicacion.ResumenDonacion.ruta) {
                 val formState by viewModelInicio.formState.collectAsState()
 
                 PantallaResumenDonacion(
