@@ -71,12 +71,13 @@ class TarjetaProductoTest {
     fun conLaConversionActivaMuestraElPrecioEnDolares() {
         reglaCompose.setContent {
             TarjetaProducto(
-                producto = agenda, cantidad = 1,
+                producto = agenda, cantidad = 2,
                 onSumar = {}, onRestar = {}, onConfirmarCompra = {},
                 indicadores = EstadoIndicadores(valorDolar = 1000.0, valorUf = 40000.0, mostrarConversion = true)
             )
         }
 
-        reglaCompose.onNodeWithText("≈ US$ 12,50", useUnmergedTree = true).assertExists()
+        reglaCompose.onNodeWithText("≈ US$ 12,50", useUnmergedTree = true).assertExists() // precio unitario
+        reglaCompose.onNodeWithText("≈ US$ 25,00", useUnmergedTree = true).assertExists() // total de 2 unidades
     }
 }
