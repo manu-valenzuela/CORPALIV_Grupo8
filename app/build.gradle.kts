@@ -24,6 +24,23 @@ android {
 
     buildTypes {
         release {
+		signingConfigs {
+        create("release") {
+            storeFile = file("corpaliv.jks")
+            storePassword = "corpaliv"
+            keyAlias = "corpaliv"
+            keyPassword = "corpaliv"
+        }
+    }
+
+    buildTypes {
+        release {
+            optimization {
+                enable = false
+            }
+            signingConfig = signingConfigs.getByName("release")
+        }
+    }
             optimization {
                 enable = false
             }

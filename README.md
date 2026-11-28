@@ -1,101 +1,64 @@
 # CORPALIV
-Trabajo semestral para el curso Desarrollo de Aplicaciones Móviles (DSY1105) de Ingeniería en Informática, DuocUC.
+
+Aplicación móvil para la Fundación CORPALIV. Permite ver noticias, donar, comprar en la tienda solidaria y registrarse como socio. El personal de la fundación administra usuarios, donaciones, productos y noticias.
+
+Proyecto del curso Desarrollo de Aplicaciones Móviles (DSY1105), DuocUC.
 
 ## Integrantes
 
-Sebastián Rojo
+- Manuel Valenzuela
 
-Manuel Valenzuela
+## Funcionalidades
 
-## Asignación de tareas del proyecto
+**Invitado**
+- Ver noticias.
+- Hacer una donación express.
+- Ver los productos de la tienda. Para comprar debe iniciar sesión.
+- Registrarse como socio (con validación de RUT y dirección por GPS).
 
-https://github.com/users/manu-valenzuela/projects/2
+**Socio**
+- Comprar productos según el stock disponible.
 
-## Descripción de la App
+**Funcionario**
+- Ver usuarios y cambiar su rol.
+- Ver y eliminar donaciones.
+- Ver las ventas y administrar productos (crear, editar, eliminar).
+- Administrar noticias (crear, editar, eliminar).
 
-```
-CORPALIV
+**General**
+- Inicio de sesión con token JWT.
+- Conversión opcional de montos a dólares y UF.
 
-cl.duoc.corpaliv
-├── MainActivity.kt                       → Punto de entrada y configuración de WindowSizeClass
-├── model/                                → Modelos de dominio y Data Transfer Objects
-│   ├── DonacionExpress.kt                → Modelo de donación rápida
-│   ├── DonacionUiState.kt                → Estado UI y errores de donación
-│   ├── Evento.kt                         → Entidad de evento institucional
-│   ├── Noticia.kt                        → Entidad de noticia
-│   ├── Producto.kt                       → Entidad de producto de la tienda
-│   ├── Usuario.kt                        → Entidad Usuario, RolUsuario y OpcionDonacionMensual
-│   └── Venta.kt                          → Entidad de registro de venta comercial
-├── repository/                           → Fuentes de datos y Persistencia Local
-│   ├── DonacionDataStore.kt              → Almacenamiento local de donaciones (DataStore)
-│   ├── RepositorioNoticias.kt            → Repositorio de contenidos informativos
-│   ├── RepositorioVenta.kt               → Gestión de catálogo y ventas en memoria
-│   └── UsuarioDataStore.kt               → Almacenamiento y actualización de usuarios
-├── viewmodel/                            → Capa de Lógica de Presentación (MVVM)
-│   ├── ViewModelInicio.kt                → Gestión de inicio, noticias y donaciones
-│   ├── ViewModelTienda.kt                → Lógica comercial y compras
-│   └── ViewModelUsuario.kt               → Lógica de registro y roles de usuario
-├── ui/
-│   ├── screens/                          → Pantallas UI y Componentes Reusables
-│   │   ├── AndamiajeAplicacion.kt        → Scaffold, TopBar y NavigationBar reactiva
-│   │   ├── PantallaGestionDonaciones*.kt → Vista compacta/adaptativa de donaciones
-│   │   ├── PantallaGestionUsuarios*.kt   → Vista compacta/adaptativa de administración
-│   │   ├── PantallaInicio*.kt            → Home con noticias y Donación Express
-│   │   ├── PantallaRegistroSocio*.kt     → Formulario con captura GPS
-│   │   ├── PantallaResumenDonacion*.kt   → Vista de confirmación de aporte
-│   │   ├── PantallaSeleccionRol*.kt      → Selector inicial de modo de acceso
-│   │   ├── PantallaTienda*.kt            → Vista comercial socio
-│   │   ├── PantallaVentas*.kt            → Vista comercial funcionario
-│   │   └── Tarjeta*.kt                   → Componentes modulares (Producto, Usuario, Evento)
-│   ├── theme/                            → Sistema de Diseño Material 3 (Color, Type, Theme)
-│   └── utils/                            → NavegacionAplicacion, RutaAplicacion y ManejadorUbicacion
+## Endpoints utilizados
 
-```
+### Microservicios (Spring Boot)
 
-## Instrucciones de ejecución
+| Servicio | Puerto | Endpoints |
+|---|---|---|
+| auth | 8081 | `POST /api/auth/registro`, `POST /api/auth/login`, `GET /api/auth/cuentas`, `PATCH /api/auth/cuentas/{id}/rol` |
+| usuarios | 8082 | `GET /api/usuarios`, `GET /api/usuarios/{id}`, `POST /api/usuarios`, `PUT /api/usuarios/{id}`, `DELETE /api/usuarios/{id}` |
+| donaciones | 8083 | `POST /api/donaciones`, `GET /api/donaciones`, `DELETE /api/donaciones/{id}` |
+| noticias | 8084 | `GET /api/noticias`, `GET /api/noticias/{id}`, `POST /api/noticias`, `PUT /api/noticias/{id}`, `DELETE /api/noticias/{id}` |
+| ventas | 8085 | `GET /api/productos`, `GET /api/productos/{id}`, `POST /api/productos`, `PUT /api/productos/{id}`, `DELETE /api/productos/{id}`, `POST /api/ventas`, `GET /api/ventas` |
 
-1. Requisitos Previos en Android StudioVersión de Android Studio: Se recomienda una versión reciente (Koala, Ladybug o superior) con soporte para JDK 11/17 y Jetpack Compose.Versión de Android en Emulador/Dispositivo: En la configuración del proyecto (app/build.gradle.kts), el minSdk está fijado en API 34.
+Ubicación Backend: https://github.com/manu-valenzuela/corpaliv_grupo8_backend
 
-2. Apertura y Sincronización del Proyecto
-   
-   Obtener el código: Ejecutar git clone https://github.com/manu-valenzuela/corpaliv_grupo8 en tu terminal.
-   
-   Abrir en Android Studio: Iniciar Android Studio y selecciona Open. Navegar hasta la carpeta raíz del proyecto (CORPALIV_Grupo8) y hacer clic en OK.
-   
-   Sincronización de Gradle: Esperar a que Android Studio descargue las dependencias e indexe el proyecto.
+### API externa
 
-4. Configuración del Emulador (AVD)
-   
-   Abrir el Device Manager desde el panel derecho de Android Studio. Hacer clic en Create Device (ejemplo: Pixel 6).
-   
-   Seleccionar una imagen de sistema con API Level 34 (UpsideDownCake).
-   
-   Finalizar la creación y encender el emulador.
-   
-   Compilación y EjecuciónEn la barra superior, confirmar que esté seleccionada la configuración de ejecución app y el emulador creado.
-   
-   Hacer clic en el botón de reproducción Run 'app' (o presiona Shift + F10).
+| API | Endpoint | Uso |
+|---|---|---|
+| mindicador.cl | `GET https://mindicador.cl/api` | Valor del dólar y la UF |
 
-6. Guía de Prueba Paso a Paso por Funcionalidad
-   
-   A. Seleccionar de Rol e IngresoAcceso: Al abrir la app, ver la pantalla inicial de selección de rol.
-   
-       - Prueba: Ingresa primero como "Acceder como Socio / Invitado".
-   
-   B. Flujo de Socio / InvitadoInicio y Donación Express:
-   
-       - Revisa el listado de noticias y eventos cargados. En el bloque de Donación Express, intenta presionar el botón sin llenar los campos para comprobar las           validaciones. Ingresa un nombre, correo y monto válido, y presiona confirmar.
-   
-       - Tienda Solidaria: En la barra de navegación inferior, selecciona Tienda. Cambia la cantidad de unidades (+ / -) de un producto para verificar el cálculo          dinámico del subtotal. Presiona Confirmar Compra para generar la transacción.
-   
-       - Registro de Socio con GPS: Selecciona Registrarse en el menú inferior. Completa los campos del formulario. Otorga el permiso de ubicación cuando la app           lo solicite y presiona el botón para capturar las coordenadas GPS (latitud y longitud) en tiempo real mediante los servicios nativos del dispositivo.
-   
-   C. Flujo de Funcionario / Intranet
-   
-       - Cambiar a Modo Funcionario: Vuelve a Inicio en el menú inferior y selecciona la opción para cambiar de rol, o reinicia la app e ingresa como                      Funcionario.
-   
-       - Gestión de Usuarios: Selecciona la pestaña Usuarios en la barra inferior. Visualiza los usuarios registrados. Haz clic en los roles (Socio, Voluntario, Funcionario) para cambiar dinámicamente el rol de un usuario y verificar que el cambio se guarde localmente.
-   
-       - Gestión de Donaciones: Selecciona la pestaña Donaciones para auditar las donaciones express realizadas durante las pruebas anteriores.
-   
-       - Gestión de Ventas: Selecciona Ventas para revisar el resumen financiero acumulado y el detalle de compras registradas en la tienda.   
+## Pasos para ejecutar
+
+Requisitos: Android Studio, JDK 17 o superior, MySQL 8 y un emulador con Android 14 (API 34) o superior.
+
+1. En MySQL, ejecutar `bd.sql` y luego `datos.sql` (repositorio de microservicios).
+2. Levantar los cinco microservicios desde IntelliJ, o con `mvnw spring-boot:run` en cada carpeta: `auth/auth`, `usuarios/usuarios`, `donaciones/donaciones`, `noticias/noticias` y `ventas/ventas`.
+3. Abrir este proyecto en Android Studio, sincronizar Gradle y ejecutar `app` en el emulador.
+4. Para entrar como funcionario: `admin@corpaliv.cl` / `admin123`.
+
+## Firma APK
+
+Las llaves usadas en la firma están en app/corpaliv.jks.
+Las evidencias del proceso de firma están en evidencias_firma.
